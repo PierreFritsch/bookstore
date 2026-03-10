@@ -15,7 +15,8 @@
     "patch-package": "^8.0.1"
   },
   "devDependencies": {
-    "@cap-js/cds-test": "*"
+    "@cap-js/cds-test": "*",
+    "@cap-js/sqlite": "^1.11.1"
   },
   "scripts": {
     "start": "cds-serve",
