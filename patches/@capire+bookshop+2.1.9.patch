@@ -51,3 +51,16 @@ index f3e910f..b74ce6b 100644
    req.data.ID = id + 4 // Note: that is not safe! ok for this sample only.
  }
 +
+diff --git a/node_modules/@capire/bookshop/srv/cat-service.js b/node_modules/@capire/bookshop/srv/cat-service.js
+index 1598f05..226f0e0 100644
+--- a/node_modules/@capire/bookshop/srv/cat-service.js
++++ b/node_modules/@capire/bookshop/srv/cat-service.js
+@@ -2,7 +2,7 @@ const cds = require('@sap/cds')
+ 
+ class CatalogService extends cds.ApplicationService { init() {
+ 
+-  const { Books } = cds.entities ('sap.capire.bookshop')
++  const { Books } = cds.model.definitions
+   const { ListOfBooks } = this.entities
+ 
+   // Add some discount for overstocked books
