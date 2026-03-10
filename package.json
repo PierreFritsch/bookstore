@@ -25,7 +25,8 @@
     "watch": "cds watch",
     "chest": "chest",
     "jest": "jest",
-    "test": "chest"
+    "test": "chest",
+    "postinstall": "patch-package"
   },
   "cds": {
     "requires": {
