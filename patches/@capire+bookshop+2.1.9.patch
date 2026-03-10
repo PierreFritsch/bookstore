@@ -1,5 +1,5 @@
 diff --git a/node_modules/@capire/bookshop/srv/admin-service.cds b/node_modules/@capire/bookshop/srv/admin-service.cds
-index 883fd1a..2df1758 100644
+index 883fd1a..a7e4c5d 100644
 --- a/node_modules/@capire/bookshop/srv/admin-service.cds
 +++ b/node_modules/@capire/bookshop/srv/admin-service.cds
 @@ -1,10 +1,20 @@
@@ -25,9 +25,10 @@ index 883fd1a..2df1758 100644
 +
  }
  
- // Additionally serve via HCQL and REST
+-// Additionally serve via HCQL and REST
 -annotate AdminService with @hcql @rest;
-+annotate AdminService with  @hcql  @rest;
++// Additionally serve via REST
++annotate AdminService with @rest;
 diff --git a/node_modules/@capire/bookshop/srv/admin-service.js b/node_modules/@capire/bookshop/srv/admin-service.js
 index f3e910f..b74ce6b 100644
 --- a/node_modules/@capire/bookshop/srv/admin-service.js
