@@ -26,6 +26,10 @@
     "test": "chest",
     "postinstall": "patch-package"
   },
+  "overrides": {
+    "@sap/cds": "8.9.8",
+    "@sap/cds-compiler": "5.9.8"
+  },
   "cds": {
     "requires": {
       "ReviewsService": "odata",
