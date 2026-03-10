@@ -34,15 +34,6 @@ cds.once("served", async () => {
   });
 
   //
-  // Update Books' average ratings when ReviewsService signals updated reviews
-  //
-  ReviewsService.on("AverageRatings.Changed", (msg) => {
-    console.debug("> received:", msg.event, msg.data); // eslint-disable-line no-console
-    const { subject, reviews, rating } = msg.data;
-    return UPDATE(Books, subject).with({ reviews, rating });
-  });
-
-  //
   // Reduce stock of ordered books for orders are created from Orders admin UI
   //
   OrdersService.on("OrderChanged", (msg) => {
