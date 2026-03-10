@@ -52,6 +52,18 @@ index f3e910f..b74ce6b 100644
    req.data.ID = id + 4 // Note: that is not safe! ok for this sample only.
  }
 +
+diff --git a/node_modules/@capire/bookshop/srv/cat-service.cds b/node_modules/@capire/bookshop/srv/cat-service.cds
+index b9da4b6..5c4e8fc 100644
+--- a/node_modules/@capire/bookshop/srv/cat-service.cds
++++ b/node_modules/@capire/bookshop/srv/cat-service.cds
+@@ -19,5 +19,5 @@ service CatalogService @(odata:'/browse') {
+   action submitOrder ( book: Books:ID, quantity: Integer );
+ }
+ 
+-// Additionally serve via HCQL and REST
+-annotate CatalogService with @hcql @rest;
++// Additionally serve via REST
++annotate CatalogService with @rest;
 diff --git a/node_modules/@capire/bookshop/srv/cat-service.js b/node_modules/@capire/bookshop/srv/cat-service.js
 index 1598f05..2758077 100644
 --- a/node_modules/@capire/bookshop/srv/cat-service.js
