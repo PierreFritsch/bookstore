@@ -30,7 +30,7 @@ index 883fd1a..a7e4c5d 100644
 +// Additionally serve via REST
 +annotate AdminService with @rest;
 diff --git a/node_modules/@capire/bookshop/srv/admin-service.js b/node_modules/@capire/bookshop/srv/admin-service.js
-index f3e910f..b74ce6b 100644
+index f3e910f..763d2a6 100644
 --- a/node_modules/@capire/bookshop/srv/admin-service.js
 +++ b/node_modules/@capire/bookshop/srv/admin-service.js
 @@ -3,6 +3,13 @@ const cds = require('@sap/cds')
@@ -41,7 +41,7 @@ index f3e910f..b74ce6b 100644
 +  this.on("READ", "AuthorizationRestrictions", async (req) => {
 +    return {
 +      "id": "SINGLETON",
-+      "isDeleteForbidden": false
++      "isDeleteForbidden": true
 +    }
 +  });
    return super.init()
