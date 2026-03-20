@@ -12,7 +12,8 @@
     "@capire/reviews": "*",
     "@sap-cloud-sdk/http-client": "^4",
     "@sap-cloud-sdk/resilience": "^4",
-    "@sap/cds": ">=5"
+    "@sap/cds": ">=5",
+    "@sap/cds-dk": "^8.9.16"
   },
   "devDependencies": {
     "@cap-js/cds-test": ">=0.4.1",
