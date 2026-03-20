@@ -15,10 +15,24 @@ cds.once ('served', async ()=>{
   const CatalogService = await cds.connect.to ('CatalogService')
   const ReviewsService = await cds.connect.to ('ReviewsService')
   const OrdersService = await cds.connect.to ('OrdersService')
+  const AdminService = await cds.connect.to ('AdminService')
   const db = await cds.connect.to ('db')
 
   // reflect entity definitions used below...
   const { Books } = cds.entities ('sap.capire.bookshop')
+
+  //
+  // Copy action on Authors
+  //
+  AdminService.on('Copy', 'Authors', async (req) => {
+    const [{ ID }] = req.params
+    const author = await SELECT.one.from('AdminService.Authors').where({ ID })
+    if (!author) return req.error(404, `Author ${ID} not found`)
+    const { id } = await SELECT.one.from('AdminService.Authors').columns('max(ID) as id')
+    const copy = { ...author, ID: id + 4, name: `Copy of ${author.name}` }
+    await INSERT.into('AdminService.Authors').entries(copy)
+    return copy
+  })
 
   //
   // Delegate requests to read reviews to the ReviewsService

@@ -1,5 +1,24 @@
 using {AdminService} from '@capire/bookshop';
 
+////////////////////////////////////////////////////////////////////////////
+//
+//  Authors List Report
+//
+
+annotate AdminService.Authors with @(
+    UI.LineItem: [
+        {Value: name},
+        {Value: dateOfBirth},
+        {Value: dateOfDeath},
+        {
+            $Type : 'UI.DataFieldForAction',
+            Label : 'Copy',
+            Action: 'AdminService.Copy',
+            Inline: false
+        }
+    ]
+);
+
 annotate AdminService.Authors with @odata.draft.enabled;
 
 ////////////////////////////////////////////////////////////////////////////
