@@ -4,7 +4,6 @@
   "description": "Shows how to reuse and compose with CAP.",
   "repository": "https://github.com/capire/bookstore",
   "dependencies": {
-    "@cap-js/hana": ">=1",
     "@capire/bookshop": "*",
     "@capire/common": "*",
     "@capire/data-viewer": "*",
@@ -12,11 +11,12 @@
     "@capire/reviews": "*",
     "@sap-cloud-sdk/http-client": "^4",
     "@sap-cloud-sdk/resilience": "^4",
-    "@sap/cds": ">=5"
+    "@sap/cds": ">=9",
+    "@sap/cds-dk": "^9"
   },
   "devDependencies": {
     "@cap-js/cds-test": ">=0.4.1",
-    "@cap-js/sqlite": ">=1"
+    "@cap-js/sqlite": ">=2"
   },
   "scripts": {
     "start": "cds-serve",
