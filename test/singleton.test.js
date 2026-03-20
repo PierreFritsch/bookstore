@@ -11,6 +11,6 @@ describe("AuthorizationRestrictions singleton", () => {
   it("is accessible via OData and returns expected output", async () => {
     const { status, data } = await GET`/admin/AuthorizationRestrictions`;
     expect(status).to.equal(200);
-    expect(data).to.containSubset({ ID: "SINGLETON", isDeleteForbidden: expect.any(Boolean), isCopyForbidden: expect.any(Boolean) });
+    expect(data).to.containSubset({ ID: "SINGLETON", isDeleteForbidden: expect.any(Boolean), isCopyForbidden: expect.any(Boolean), isCreateForbidden: expect.any(Boolean) });
   });
 });

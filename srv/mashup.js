@@ -14,7 +14,7 @@ cds.on ('serving', (srv) => {
   if (srv.name !== 'AdminService') return
   srv.prepend (() => {
     srv.on ('READ', 'AuthorizationRestrictions', () => {
-      return { ID: 'SINGLETON', isDeleteForbidden: true, isCopyForbidden: true }
+      return { ID: 'SINGLETON', isDeleteForbidden: true, isCopyForbidden: true, isCreateForbidden: true }
     })
   })
 })

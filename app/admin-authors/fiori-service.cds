@@ -21,6 +21,7 @@ annotate AdminService.Authors with @(
 );
 
 annotate AdminService.Authors with @UI.DeleteHidden: {$edmJson: {$Path: '/AuthorizationRestrictions/isDeleteForbidden'}};
+annotate AdminService.Authors with @UI.CreateHidden: {$edmJson: {$Path: '/AuthorizationRestrictions/isCreateForbidden'}};
 
 annotate AdminService.Authors with @odata.draft.enabled;
 

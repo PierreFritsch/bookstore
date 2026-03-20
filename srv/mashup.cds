@@ -42,8 +42,9 @@ extend service AdminService {
   @odata.singleton
   @cds.persistence.skip
   entity AuthorizationRestrictions {
-    key ID                : String;
-        isDeleteForbidden : Boolean;
-        isCopyForbidden   : Boolean;
+    key ID                 : String;
+        isDeleteForbidden  : Boolean;
+        isCopyForbidden    : Boolean;
+        isCreateForbidden  : Boolean;
   }
 }
