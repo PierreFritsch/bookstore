@@ -12,7 +12,9 @@
     "@capire/reviews": "*",
     "@sap-cloud-sdk/http-client": "^4",
     "@sap-cloud-sdk/resilience": "^4",
-    "@sap/cds": ">=5"
+    "@sap/cds": ">=5",
+    "@sap/cds-dk": "^9.8.0",
+    "patch-package": "^8.0.1"
   },
   "devDependencies": {
     "@cap-js/cds-test": ">=0.4.1",
@@ -23,7 +25,8 @@
     "watch": "cds watch",
     "chest": "chest",
     "jest": "jest",
-    "test": "chest"
+    "test": "chest",
+    "postinstall": "patch-package"
   },
   "cds": {
     "requires": {
