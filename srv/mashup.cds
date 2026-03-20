@@ -8,10 +8,9 @@
 //
 //  Extend Books with access to Reviews and average ratings
 //
-using { ReviewsService.AverageRatings } from '@capire/reviews';
 using { sap.capire.bookshop.Books } from '@capire/bookshop';
 extend Books with {
-  rating  : type of AverageRatings:rating; // average rating
+  rating  : Integer; // average rating
   reviews : Integer @title : '{i18n>NumberOfReviews}';
 }
 
@@ -32,3 +31,18 @@ using from '@capire/common';
 
 // Restrict admin access to AdminService
 annotate AdminService with @requires:'admin';
+
+using { AdminService } from '@capire/bookshop';
+extend entity AdminService.Authors with actions {
+    action Copy() returns AdminService.Authors;
+}
+
+extend service AdminService {
+  @odata.singleton
+  entity AuthorizationRestrictions {
+    key ID                 : String;
+        isDeleteForbidden  : Boolean;
+        isCopyForbidden    : Boolean;
+        isCreateForbidden  : Boolean;
+  }
+}

@@ -4,8 +4,19 @@ const cds = require ('@sap/cds')
 // Add routes to UIs from imported packages
 if (!cds.env.production) cds.once ('bootstrap', (app) => {
   app.serve ('/bookshop') .from ('@capire/bookshop','app/vue')
-  app.serve ('/reviews') .from ('@capire/reviews','app/vue')
   app.serve ('/orders') .from('@capire/orders','app/orders')
+})
+
+
+// Register handler on the serving AdminService instance
+// so it runs before the generic handle_crud_requests handler that would otherwise throw a 501 for persistence-skipped entities.
+cds.on ('serving', (srv) => {
+  if (srv.name !== 'AdminService') return
+  srv.prepend (() => {
+    srv.on ('READ', 'AuthorizationRestrictions', () => {
+      return { ID: 'SINGLETON', isDeleteForbidden: true, isCopyForbidden: true, isCreateForbidden: true }
+    })
+  })
 })
 
 
@@ -13,22 +24,25 @@ if (!cds.env.production) cds.once ('bootstrap', (app) => {
 cds.once ('served', async ()=>{
 
   const CatalogService = await cds.connect.to ('CatalogService')
-  const ReviewsService = await cds.connect.to ('ReviewsService')
   const OrdersService = await cds.connect.to ('OrdersService')
+  const AdminService = await cds.connect.to ('AdminService')
   const db = await cds.connect.to ('db')
 
   // reflect entity definitions used below...
   const { Books } = cds.entities ('sap.capire.bookshop')
 
   //
-  // Delegate requests to read reviews to the ReviewsService
-  // Note: prepend is neccessary to intercept generic default handler
+  // Copy action on Authors
   //
-  CatalogService.prepend (srv => srv.on ('READ', 'Books/reviews', (req) => {
-    console.debug ('> delegating request to ReviewsService') // eslint-disable-line no-console
-    const [id] = req.params, { columns, limit } = req.query.SELECT
-    return ReviewsService.read ('Reviews',columns).limit(limit).where({subject:String(id)})
-  }))
+  AdminService.on('Copy', 'Authors', async (req) => {
+    const [{ ID }] = req.params
+    const author = await SELECT.one.from('AdminService.Authors').where({ ID })
+    if (!author) return req.error(404, `Author ${ID} not found`)
+    const { id } = await SELECT.one.from('AdminService.Authors').columns('max(ID) as id')
+    const copy = { ...author, ID: id + 4, name: `Copy of ${author.name}` }
+    await INSERT.into('AdminService.Authors').entries(copy)
+    return copy
+  })
 
   //
   // Create an order with the OrdersService when CatalogService signals a new order
@@ -41,15 +55,6 @@ cds.once ('served', async ()=>{
       Items: [{ product:{ID:`${book}`}, title, price, quantity }],
       buyer, createdBy: buyer, currency
     })
-  })
-
-  //
-  // Update Books' average ratings when ReviewsService signals updated reviews
-  //
-  ReviewsService.on ('AverageRatings.Changed', (msg) => {
-    console.debug ('> received:', msg.event, msg.data) // eslint-disable-line no-console
-    const { subject, reviews, rating } = msg.data
-    return UPDATE (Books, subject) .with ({ reviews, rating })
   })
 
   //

@@ -1,9 +1,5 @@
-# The @hcql annotation causes a SyntaxError in CDS 8 due to an incompatible path-to-regexp
-# version used internally. Removing it keeps the services accessible via OData and REST only.
-# The cat-service.js fixes work around a CDS 8 issue where cds.entities() returns undefined
-# at init() time; using the fully-qualified entity name string avoids the problem.
 diff --git a/node_modules/@capire/bookshop/srv/admin-service.cds b/node_modules/@capire/bookshop/srv/admin-service.cds
-index 883fd1a..ed6c513 100644
+index 883fd1a..3d4fe4b 100644
 --- a/node_modules/@capire/bookshop/srv/admin-service.cds
 +++ b/node_modules/@capire/bookshop/srv/admin-service.cds
 @@ -6,5 +6,5 @@ service AdminService @(odata:'/admin') {
@@ -12,10 +8,10 @@ index 883fd1a..ed6c513 100644
  
 -// Additionally serve via HCQL and REST
 -annotate AdminService with @hcql @rest;
-+// Additionally serve via REST
++// @hcql is not supported in CDS 8: it causes a SyntaxError via an incompatible path-to-regexp version
 +annotate AdminService with @rest;
 diff --git a/node_modules/@capire/bookshop/srv/cat-service.cds b/node_modules/@capire/bookshop/srv/cat-service.cds
-index b9da4b6..5c4e8fc 100644
+index b9da4b6..b56f9fc 100644
 --- a/node_modules/@capire/bookshop/srv/cat-service.cds
 +++ b/node_modules/@capire/bookshop/srv/cat-service.cds
 @@ -19,5 +19,5 @@ service CatalogService @(odata:'/browse') {
@@ -24,7 +20,7 @@ index b9da4b6..5c4e8fc 100644
  
 -// Additionally serve via HCQL and REST
 -annotate CatalogService with @hcql @rest;
-+// Additionally serve via REST
++// @hcql is not supported in CDS 8: it causes a SyntaxError via an incompatible path-to-regexp version
 +annotate CatalogService with @rest;
 diff --git a/node_modules/@capire/bookshop/srv/cat-service.js b/node_modules/@capire/bookshop/srv/cat-service.js
 index 1598f05..0d25a98 100644
