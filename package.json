@@ -9,21 +9,26 @@
     "@capire/common": "*",
     "@capire/data-viewer": "*",
     "@capire/orders": "*",
-    "@capire/reviews": "*",
     "@sap-cloud-sdk/http-client": "^4",
     "@sap-cloud-sdk/resilience": "^4",
-    "@sap/cds": ">=5"
+    "@sap/cds": "8.9.9",
+    "@sap/cds-dk": "8.9.16",
+    "patch-package": "^8.0.1"
   },
   "devDependencies": {
     "@cap-js/cds-test": ">=0.4.1",
-    "@cap-js/sqlite": ">=1"
+    "@cap-js/sqlite": "^1.11.1"
+  },
+  "overrides": {
+    "@sap/cds": "8.9.9"
   },
   "scripts": {
     "start": "cds-serve",
     "watch": "cds watch",
     "chest": "chest",
     "jest": "jest",
-    "test": "chest"
+    "test": "chest",
+    "postinstall": "patch-package"
   },
   "cds": {
     "requires": {
@@ -41,6 +46,13 @@
     },
     "log": {
       "service": true
+    },
+    "fiori": {
+      "preview": {
+        "ui5": {
+          "version": "1.130.9"
+        }
+      }
     }
   }
 }

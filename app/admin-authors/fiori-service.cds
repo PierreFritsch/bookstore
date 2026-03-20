@@ -1,5 +1,28 @@
 using {AdminService} from '@capire/bookshop';
 
+////////////////////////////////////////////////////////////////////////////
+//
+//  Authors List Report
+//
+
+annotate AdminService.Authors with @(
+    UI.LineItem: [
+        {Value: name},
+        {Value: dateOfBirth},
+        {Value: dateOfDeath},
+        {
+            $Type        : 'UI.DataFieldForAction',
+            Label        : 'Copy',
+            Action       : 'AdminService.Copy',
+            Inline       : false,
+            ![@UI.Hidden]: {$edmJson: {$Path: '/AuthorizationRestrictions/isCopyForbidden'}}
+        }
+    ]
+);
+
+annotate AdminService.Authors with @UI.DeleteHidden: {$edmJson: {$Path: '/AuthorizationRestrictions/isDeleteForbidden'}};
+annotate AdminService.Authors with @UI.CreateHidden: {$edmJson: {$Path: '/AuthorizationRestrictions/isCreateForbidden'}};
+
 annotate AdminService.Authors with @odata.draft.enabled;
 
 ////////////////////////////////////////////////////////////////////////////
