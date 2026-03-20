@@ -1,2 +1,5 @@
 fiori:
   direct_crud: true
+  preview:
+    ui5:
+      version: "1.130.9"
