@@ -8,6 +8,17 @@ if (!cds.env.production) cds.once ('bootstrap', (app) => {
   app.serve ('/orders') .from('@capire/orders','app/orders')
 })
 
+// Register handler on the serving AdminService instance
+// so it runs before the generic handle_crud_requests handler that would otherwise throw a 501 for persistence-skipped entities.
+cds.on ('serving', (srv) => {
+  if (srv.name !== 'AdminService') return
+  srv.prepend (() => {
+    srv.on ('READ', 'AuthorizationRestrictions', () => {
+      return { ID: 'SINGLETON', isDeleteForbidden: false, isCopyForbidden: false }
+    })
+  })
+})
+
 
 // Mashing up bookshop services with required services...
 cds.once ('served', async ()=>{

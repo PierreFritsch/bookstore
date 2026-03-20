@@ -37,3 +37,13 @@ using { AdminService } from '@capire/bookshop';
 extend entity AdminService.Authors with actions {
     action Copy() returns AdminService.Authors;
 }
+
+extend service AdminService {
+  @odata.singleton
+  @cds.persistence.skip
+  entity AuthorizationRestrictions {
+    key ID                : String;
+        isDeleteForbidden : Boolean;
+        isCopyForbidden   : Boolean;
+  }
+}
