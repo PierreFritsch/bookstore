@@ -8,10 +8,10 @@
 //
 //  Extend Books with access to Reviews and average ratings
 //
-using { ReviewsService.AverageRatings } from '@capire/reviews';
+// @capire/reviews uses `type : projection on` which requires CDS >= 9
 using { sap.capire.bookshop.Books } from '@capire/bookshop';
 extend Books with {
-  rating  : type of AverageRatings:rating; // average rating
+  rating  : Integer; // average rating
   reviews : Integer @title : '{i18n>NumberOfReviews}';
 }
 

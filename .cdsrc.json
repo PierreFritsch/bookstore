@@ -1,0 +1,13 @@
+{
+  "build": {
+    "tasks": [
+      {
+        "for": "hana",
+        "src": "db",
+        "options": {
+          "model": ["db", "srv", "app", "db/hana", "@capire/common"]
+        }
+      }
+    ]
+  }
+}
