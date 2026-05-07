@@ -10,19 +10,21 @@
  * For large datasets this exceeds the HANA maximum SQL packet size.
  */
 
+using { cuid } from '@sap/cds/common';
+
 service BulkUpdateService {
 
   @odata.draft.enabled
-  entity Parents {
-    key ID       : Integer;
+  entity Parents : cuid {
     description  : String;
-    children     : Composition of many Children on children.parent_ID = ID;
+    children     : Composition of many Children on children.parent = $self;
   }
 
-  entity Children {
-    key ID        : Integer;
-        parent_ID : Integer;
-        value     : Decimal(10,2);
-        category  : String;
+  entity Children : cuid {
+    parent       : Association to Parents;
+    value        : Decimal(10,2);
+    category     : String(10);
+    status       : String(2);
+    comment      : String(5000);
   }
 }

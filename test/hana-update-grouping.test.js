@@ -7,8 +7,8 @@
  *   UPDATE <entity>_drafts SET col = ? WHERE ID IN (?, ?, …, ?)
  *
  * with every affected child ID in the IN-list.  For large datasets (≥ ~4 000
- * rows) the total size of bound parameters exceeds the maximum SQL packet size
- * supported by SAP HANA, causing:
+ * rows with UUID keys) the total size of bound parameters exceeds the maximum
+ * SQL packet size supported by SAP HANA, causing:
  *
  *   "Failed to set parameters, maximum packet size exceeded."
  *
@@ -29,11 +29,15 @@ cds.env.requires.OrdersService = { credentials: { url: 'http://localhost:4006/or
 const { expect } = cds.test('.')
 
 const CHILD_COUNT = Number(process.env.CHILD_COUNT_OVERRIDE) || 5_000
-const PARENT_ID   = 1
+const PARENT_ID   = cds.utils.uuid()
 const DRAFT_UUID  = cds.utils.uuid()
 
 describe('HANA — UPDATE with large WHERE ID IN (...) list', () => {
+  let childIDs
+
   beforeAll(async () => {
+    childIDs = Array.from({ length: CHILD_COUNT }, () => cds.utils.uuid())
+
     await cds.db.run(
       INSERT.into('DRAFT.DraftAdministrativeData').entries({
         DraftUUID:            DRAFT_UUID,
@@ -60,20 +64,21 @@ describe('HANA — UPDATE with large WHERE ID IN (...) list', () => {
 
     // Insert CHILD_COUNT draft Children all sharing the same initial values.
     // Done in chunks of 1000 to stay within single-statement parameter limits.
-    const children = Array.from({ length: CHILD_COUNT }, (_, i) => ({
-      ID:                                1_000_000 + i,
-      parent_ID:                         PARENT_ID,
-      value:                             10.0,
-      category:                          'A',
-      IsActiveEntity:                    false,
-      HasActiveEntity:                   false,
-      HasDraftEntity:                    false,
-      DraftAdministrativeData_DraftUUID: DRAFT_UUID,
-    }))
-
-    for (let i = 0; i < children.length; i += 1_000) {
+    for (let i = 0; i < CHILD_COUNT; i += 1_000) {
+      const chunk = childIDs.slice(i, i + 1_000).map(id => ({
+        ID:                                id,
+        parent_ID:                         PARENT_ID,
+        value:                             10.0,
+        category:                          'A',
+        status:                            'IP',
+        comment:                           null,
+        IsActiveEntity:                    false,
+        HasActiveEntity:                   false,
+        HasDraftEntity:                    false,
+        DraftAdministrativeData_DraftUUID: DRAFT_UUID,
+      }))
       await cds.db.run(
-        INSERT.into('BulkUpdateService.Children.drafts').entries(children.slice(i, i + 1_000))
+        INSERT.into('BulkUpdateService.Children.drafts').entries(chunk)
       )
     }
   })
@@ -85,23 +90,23 @@ describe('HANA — UPDATE with large WHERE ID IN (...) list', () => {
   })
 
   it(`UPDATEs ${CHILD_COUNT} draft Children with a single WHERE ID IN (...) clause`, async () => {
-    // Build the ID list — this is what the persistence layer generates when
-    // all children share the same changed data (e.g., all get category = 'B').
+    // This is what the persistence layer generates when all children share the
+    // same changed data (e.g., all get status = 'SC', category = 'B').
     // It groups them into a single UPDATE ... SET ... WHERE ID IN (...).
-    const ids = Array.from({ length: CHILD_COUNT }, (_, i) => 1_000_000 + i)
-
-    // Construct the CQN exactly as the persistence layer does:
-    //   UPDATE <entity>_drafts SET <col> = <val> WHERE ID IN (id1, id2, ..., idN)
+    //
+    // With UUID keys (NVARCHAR(36)), each ID in the IN-list occupies ~36 bytes
+    // of the parameter payload. For 5000 UUIDs that's ~180 KB of parameters,
+    // which combined with the SQL text can exceed HANA's max packet size.
     const query = UPDATE.entity('BulkUpdateService.Children.drafts')
-      .set({ category: 'B' })
-      .where({ ID: { in: ids } })
+      .set({ status: 'SC', category: 'B' })
+      .where({ ID: { in: childIDs } })
 
     await cds.db.run(query)
 
     // Verify
     const updated = await cds.db.run(
       SELECT.from('BulkUpdateService.Children.drafts')
-        .where({ parent_ID: PARENT_ID, category: 'B' })
+        .where({ parent_ID: PARENT_ID, status: 'SC' })
         .columns('count(ID) as count')
     )
     expect(updated[0].count).to.equal(CHILD_COUNT)
@@ -135,10 +140,10 @@ describe('HANA — UPDATE with large WHERE ID IN (...) list', () => {
  *
  * Observed result (CDS 8.9.10 / @sap/cds-hana 2.1.0 — broken)
  * ---------------------------------------------------------------
- * With CHILD_COUNT=5000, the UPDATE generates a single SQL statement:
+ * With CHILD_COUNT=5000 (default), the UPDATE generates a single SQL statement:
  *
- *   UPDATE BULKUPDATESERVICE_CHILDREN_DRAFTS SET CATEGORY = ?
- *   WHERE ID IN (?, ?, …, ?)   -- 5 000 bound parameters
+ *   UPDATE BULKUPDATESERVICE_CHILDREN_DRAFTS SET STATUS = ?, CATEGORY = ?
+ *   WHERE ID IN (?, ?, …, ?)   -- 5 000 UUID parameters
  *
  * HANA rejects this with:
  *   "Failed to set parameters, maximum packet size exceeded."
