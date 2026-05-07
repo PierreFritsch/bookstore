@@ -1,17 +1,18 @@
 /**
- * Reproducer for the HANA adapter UPDATE grouping / chunking issue.
+ * Reproducer for the UPDATE grouping / IN-list packet size issue on SAP HANA.
  *
- * When a deep UPDATE is issued on a composition root carrying a large number
- * of child entities that all share the same value for one or more columns,
- * the HANA DB adapter generates a single UPDATE statement:
+ * When many draft child entities are updated with the same column values, the
+ * persistence layer groups them into a single SQL statement:
  *
  *   UPDATE <entity>_drafts SET col = ? WHERE ID IN (?, ?, …, ?)
  *
- * with every draft child ID in the IN-list.  For large datasets (≥ ~1 000
- * rows) this exceeds the maximum SQL packet size supported by SAP HANA,
- * causing: "Failed to set parameters, maximum packet size exceeded."
+ * with every affected child ID in the IN-list.  For large datasets (≥ ~4 000
+ * rows) the total size of bound parameters exceeds the maximum SQL packet size
+ * supported by SAP HANA, causing:
  *
- * The adapter should chunk the IN-list so that each individual SQL
+ *   "Failed to set parameters, maximum packet size exceeded."
+ *
+ * The persistence layer should chunk the IN-list so that each individual SQL
  * statement stays within the packet-size limit.
  *
  * HOW TO REPRODUCE (SAP HANA — see section at bottom of this file)
@@ -31,9 +32,8 @@ const CHILD_COUNT = Number(process.env.CHILD_COUNT_OVERRIDE) || 5_000
 const PARENT_ID   = 1
 const DRAFT_UUID  = cds.utils.uuid()
 
-describe('HANA adapter — UPDATE grouping without IN-list chunking', () => {
+describe('HANA — UPDATE with large WHERE ID IN (...) list', () => {
   beforeAll(async () => {
-    // Shared DraftAdministrativeData row required by all draft children
     await cds.db.run(
       INSERT.into('DRAFT.DraftAdministrativeData').entries({
         DraftUUID:            DRAFT_UUID,
@@ -47,7 +47,6 @@ describe('HANA adapter — UPDATE grouping without IN-list chunking', () => {
       })
     )
 
-    // Parent draft row
     await cds.db.run(
       INSERT.into('BulkUpdateService.Parents.drafts').entries({
         ID:                                PARENT_ID,
@@ -59,8 +58,8 @@ describe('HANA adapter — UPDATE grouping without IN-list chunking', () => {
       })
     )
 
-    // Insert CHILD_COUNT draft Children all sharing the same initial value.
-    // Done in chunks of 1 000 to stay within single-statement parameter limits.
+    // Insert CHILD_COUNT draft Children all sharing the same initial values.
+    // Done in chunks of 1000 to stay within single-statement parameter limits.
     const children = Array.from({ length: CHILD_COUNT }, (_, i) => ({
       ID:                                1_000_000 + i,
       parent_ID:                         PARENT_ID,
@@ -85,47 +84,27 @@ describe('HANA adapter — UPDATE grouping without IN-list chunking', () => {
     await cds.db.run(DELETE.from('DRAFT.DraftAdministrativeData').where({ DraftUUID: DRAFT_UUID }))
   })
 
-  it(`deep-UPDATEs ${CHILD_COUNT} draft Children sharing the same new value without exceeding the DB packet size`, async () => {
-    // Build the deep-update payload: all children get the same new value and
-    // category.  This mirrors a mass-import that writes back many child rows
-    // with identical column values via a single deep UPDATE on the composition
-    // root.
-    //
-    // On SAP HANA the adapter groups the per-child UPDATEs into one statement:
-    //
-    //   UPDATE BulkUpdateService_Children_drafts
-    //   SET value = ?, category = ?
-    //   WHERE ID IN (?, ?, …, ?)   -- 5 000 bound parameters
-    //
-    // HANA rejects this with "Failed to set parameters, maximum packet size
-    // exceeded."  A fixed adapter would chunk the IN-list.
-    const childrenPayload = Array.from({ length: CHILD_COUNT }, (_, i) => ({
-      ID:       1_000_000 + i,
-      value:    20.0,
-      category: 'B',
-    }))
+  it(`UPDATEs ${CHILD_COUNT} draft Children with a single WHERE ID IN (...) clause`, async () => {
+    // Build the ID list — this is what the persistence layer generates when
+    // all children share the same changed data (e.g., all get category = 'B').
+    // It groups them into a single UPDATE ... SET ... WHERE ID IN (...).
+    const ids = Array.from({ length: CHILD_COUNT }, (_, i) => 1_000_000 + i)
 
-    const srv = cds.services['BulkUpdateService']
-    await srv.tx({ user: new cds.User('alice') }, async () => {
-      const req = new cds.Request({
-        event: 'UPDATE',
-        data: { children: childrenPayload },
-        query: UPDATE('BulkUpdateService.Parents')
-          .set({ children: childrenPayload })
-          .where({ ID: PARENT_ID, IsActiveEntity: false }),
-        target: srv.entities['Parents'],
-      })
-      await srv.dispatch(req)
-    })
+    // Construct the CQN exactly as the persistence layer does:
+    //   UPDATE <entity>_drafts SET <col> = <val> WHERE ID IN (id1, id2, ..., idN)
+    const query = UPDATE.entity('BulkUpdateService.Children.drafts')
+      .set({ category: 'B' })
+      .where({ ID: { in: ids } })
 
-    // Verify that all draft Children were updated with the new value
+    await cds.db.run(query)
+
+    // Verify
     const updated = await cds.db.run(
       SELECT.from('BulkUpdateService.Children.drafts')
-        .where({ parent_ID: PARENT_ID })
-        .columns('value')
-        .limit(1)
+        .where({ parent_ID: PARENT_ID, category: 'B' })
+        .columns('count(ID) as count')
     )
-    expect(Number(updated[0]?.value)).to.equal(20.0)
+    expect(updated[0].count).to.equal(CHILD_COUNT)
   })
 })
 
@@ -156,19 +135,23 @@ describe('HANA adapter — UPDATE grouping without IN-list chunking', () => {
  *
  * Observed result (CDS 8.9.10 / @sap/cds-hana 2.1.0 — broken)
  * ---------------------------------------------------------------
- * The HANA adapter issues one single UPDATE statement:
+ * With CHILD_COUNT=5000, the UPDATE generates a single SQL statement:
  *
- *   UPDATE BULKUPDATESERVICE_CHILDREN_DRAFTS SET VALUE = ?, CATEGORY = ?
+ *   UPDATE BULKUPDATESERVICE_CHILDREN_DRAFTS SET CATEGORY = ?
  *   WHERE ID IN (?, ?, …, ?)   -- 5 000 bound parameters
  *
  * HANA rejects this with:
  *   "Failed to set parameters, maximum packet size exceeded."
  * → The test fails.
  *
+ * With CHILD_COUNT=100 or CHILD_COUNT=1000, the IN-list is small enough to
+ * fit within the packet-size limit.
+ * → The test passes.
+ *
  * Expected result (fixed)
  * -----------------------
- * The adapter chunks the IN-list and issues multiple UPDATE statements, each
- * staying within the HANA packet-size limit.
- * → The test passes.
+ * The persistence layer chunks the IN-list into smaller batches and issues
+ * multiple UPDATE statements, each staying within the HANA packet-size limit.
+ * → The test passes at any child count.
  * ──────────────────────────────────────────────────────────────────────────────
  */
