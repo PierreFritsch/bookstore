@@ -2,3 +2,6 @@ package-lock.json
 node_modules
 .DS_Store
 gen
+
+# added by cds
+.cdsrc-private.json
