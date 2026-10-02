@@ -17,7 +17,7 @@ annotate AdminService.Periods with @(
 
 ////////////////////////////////////////////////////////////////////////////
 //
-//  Books: add period column to list report
+//  Books: add period column to list report + period in filter bar by default
 //
 annotate AdminService.Books with @(
     UI.LineItem: [
@@ -26,7 +26,8 @@ annotate AdminService.Books with @(
         { Value: price,         Label: 'Price'  },
         { Value: stock,         Label: 'Stock'  },
         { Value: period_ID,     Label: 'Period' },
-    ]
+    ],
+    UI.SelectionFields: [ period_ID ],
 );
 
 
