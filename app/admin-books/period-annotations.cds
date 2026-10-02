@@ -6,11 +6,15 @@ using { AdminService } from '@capire/bookshop';
 //
 annotate AdminService.Periods with @(
     UI.LineItem: [
-        { Value: ID,          Label: 'ID'          },
-        { Value: description, Label: 'Description' },
-        { Value: validFrom,   Label: 'Valid From'  },
-        { Value: validTo,     Label: 'Valid To'    },
+        { Value: ID          },
+        { Value: description },
+        { Value: validFrom   },
+        { Value: validTo     },
     ],
+    UI.PresentationVariant: {
+        SortOrder     : [{ Property: validFrom, Descending: false }],
+        Visualizations: ['@UI.LineItem'],
+    },
     UI.SelectionFields: [ ID, description, validFrom, validTo ],
 );
 
