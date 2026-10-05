@@ -32,3 +32,18 @@ using from '@capire/common';
 
 // Restrict admin access to AdminService
 annotate AdminService with @requires:'admin';
+
+
+//
+//  Extend Books with a validity period
+//
+using { sap.capire.bookstore.Periods } from '../db/schema';
+extend sap.capire.bookshop.Books with {
+  period : Association to Periods;
+}
+
+// Expose Periods through AdminService
+using { sap.capire.bookstore as bookstore } from '../db/schema';
+extend service AdminService {
+  @readonly entity Periods as projection on bookstore.Periods;
+}

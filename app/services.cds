@@ -4,6 +4,7 @@
 
 using from './admin-authors/fiori-service';
 using from './admin-books/fiori-service';
+using from './admin-books/period-annotations';
 using from './browse/fiori-service';
 using from './genres/fiori-service';
 
