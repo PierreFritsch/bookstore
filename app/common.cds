@@ -88,7 +88,7 @@ annotate my.Authors with @(
   Common.SemanticKey: [ID],
   UI                : {
     Identification : [{Value: name}],
-    SelectionFields: [name],
+    SelectionFields: [externalId, name],
     LineItem       : [
       {Value: ID},
       {Value: externalId},
