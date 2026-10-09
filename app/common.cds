@@ -88,10 +88,10 @@ annotate my.Authors with @(
   Common.SemanticKey: [ID],
   UI                : {
     Identification : [{Value: name}],
-    SelectionFields: [externalId, name],
+    SelectionFields: [externalIdDisplay, name],
     LineItem       : [
       {Value: ID},
-      {Value: externalId},
+      {Value: externalIdDisplay},
       {Value: name},
       {Value: dateOfBirth},
       {Value: dateOfDeath},
@@ -132,7 +132,7 @@ annotate my.Authors with @(UI: {
 //
 annotate my.Authors with {
   ID           @title: '{i18n>ID}';
-  externalId   @title: '{i18n>ExternalID}';
+  externalId   @title: '{i18n>ExternalID}'  @Common.Text: name  @Common.TextArrangement: #TextFirst  @UI.Hidden;
   name         @title: '{i18n>Name}';
   dateOfBirth  @title: '{i18n>DateOfBirth}';
   dateOfDeath  @title: '{i18n>DateOfDeath}';
