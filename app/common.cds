@@ -61,7 +61,7 @@ annotate my.Books with {
   ID     @title: '{i18n>ID}';
   title  @title: '{i18n>Title}';
   genre  @title: '{i18n>Genre}'   @Common: { Text: genre.name, TextArrangement: #TextOnly };
-  author @title: '{i18n>Author}'  @Common: { Text: author.name, TextArrangement: #TextOnly };
+  author @title: '{i18n>Author}'  @Common: { Text: author.name, ExternalID: author.externalId, TextArrangement: #TextFirst };
   price  @title: '{i18n>Price}'   @Measures.ISOCurrency : currency_code;
   stock  @title: '{i18n>Stock}';
   descr  @title: '{i18n>Description}'  @UI.MultiLineText;
@@ -117,6 +117,7 @@ annotate my.Authors with @(UI : {
 annotate my.Authors with {
   ID           @title: '{i18n>ID}';
   name         @title: '{i18n>Name}';
+  externalId   @Common: { Text: name, TextArrangement: #TextFirst };
   dateOfBirth  @title: '{i18n>DateOfBirth}';
   dateOfDeath  @title: '{i18n>DateOfDeath}';
   placeOfBirth @title: '{i18n>PlaceOfBirth}';

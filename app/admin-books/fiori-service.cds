@@ -16,6 +16,13 @@ annotate AdminService.Books with @(
 			{$Type: 'UI.ReferenceFacet', Label: '{i18n>Details}', Target: '@UI.FieldGroup#Details'},
 			{$Type: 'UI.ReferenceFacet', Label: '{i18n>Admin}', Target: '@UI.FieldGroup#Admin'},
 		],
+		HeaderFacets: [
+			{$Type: 'UI.ReferenceFacet', Label: 'Author', Target: '@UI.DataPoint#Author'},
+		],
+		DataPoint #Author: {
+			Value : author_ID,
+			Title : 'Author',
+		},
 		FieldGroup#General: {
 			Data: [
 				{Value: title},
@@ -37,7 +44,7 @@ annotate AdminService.Books with @(
 				{Value: modifiedBy},
 				{Value: modifiedAt}
 			]
-		}
+		},
 	}
 );
 
