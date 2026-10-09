@@ -71,6 +71,7 @@ annotate my.Books with {
     TextArrangement: #TextOnly
   };
   author  @title: '{i18n>Author}'       @Common              : {
+    ExternalID     : author.externalId,
     Text           : author.name,
     TextArrangement: #TextFirst
   };
@@ -87,9 +88,10 @@ annotate my.Authors with @(
   Common.SemanticKey: [ID],
   UI                : {
     Identification : [{Value: name}],
-    SelectionFields: [name],
+    SelectionFields: [externalId, name],
     LineItem       : [
       {Value: ID},
+      {Value: externalId},
       {Value: name},
       {Value: dateOfBirth},
       {Value: dateOfDeath},
@@ -102,6 +104,7 @@ annotate my.Authors with @(
     SemanticObject : 'Authors',
     Text           : name,
     TextArrangement: #TextSeparate,
+    ExternalID     : externalId,
   };
 };
 
@@ -129,6 +132,7 @@ annotate my.Authors with @(UI: {
 //
 annotate my.Authors with {
   ID           @title: '{i18n>ID}';
+  externalId   @title: '{i18n>ExternalID}';
   name         @title: '{i18n>Name}';
   dateOfBirth  @title: '{i18n>DateOfBirth}';
   dateOfDeath  @title: '{i18n>DateOfDeath}';
