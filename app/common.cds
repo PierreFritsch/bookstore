@@ -35,12 +35,12 @@ annotate my.Books with @(
     ]
   }
 ) {
-  ID     @Common          : {
+  ID @Common: {
     SemanticObject : 'Books',
     Text           : title,
     TextArrangement: #TextOnly
   };
-  author @ValueList.entity: 'Authors';
+
 };
 
 annotate common.Currencies with {
@@ -71,6 +71,7 @@ annotate my.Books with {
     TextArrangement: #TextOnly
   };
   author  @title: '{i18n>Author}'       @Common              : {
+    ExternalID     : author.externalId,
     Text           : author.name,
     TextArrangement: #TextFirst
   };
@@ -87,9 +88,12 @@ annotate my.Authors with @(
   Common.SemanticKey: [ID],
   UI                : {
     Identification : [{Value: name}],
-    SelectionFields: [name],
+    SelectionFields: [
+      externalId,
+      name
+    ],
     LineItem       : [
-      {Value: ID},
+      {Value: externalId},
       {Value: name},
       {Value: dateOfBirth},
       {Value: dateOfDeath},
@@ -98,11 +102,12 @@ annotate my.Authors with @(
     ],
   }
 ) {
-  ID @Common: {
+  ID  @Common: {
     SemanticObject : 'Authors',
     Text           : name,
     TextArrangement: #TextSeparate,
-  };
+    ExternalID     : externalId,
+  }  @UI.Hidden;
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -129,6 +134,7 @@ annotate my.Authors with @(UI: {
 //
 annotate my.Authors with {
   ID           @title: '{i18n>ID}';
+  externalId   @title: '{i18n>ExternalID}'  @Common.Text: name  @Common.TextArrangement: #TextFirst  @UI.Hidden;
   name         @title: '{i18n>Name}';
   dateOfBirth  @title: '{i18n>DateOfBirth}';
   dateOfDeath  @title: '{i18n>DateOfDeath}';
