@@ -40,7 +40,7 @@ annotate my.Books with @(
     Text           : title,
     TextArrangement: #TextOnly
   };
-  author @ValueList.entity: 'Authors';
+
 };
 
 annotate common.Currencies with {
@@ -88,10 +88,10 @@ annotate my.Authors with @(
   Common.SemanticKey: [ID],
   UI                : {
     Identification : [{Value: name}],
-    SelectionFields: [externalIdDisplay, name],
+    SelectionFields: [externalId, name],
     LineItem       : [
       {Value: ID},
-      {Value: externalIdDisplay},
+      {Value: externalId},
       {Value: name},
       {Value: dateOfBirth},
       {Value: dateOfDeath},

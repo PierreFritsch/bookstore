@@ -43,9 +43,27 @@ annotate AdminService.Books with @(
 
 ////////////////////////////////////////////////////////////////////////////
 //
-//	Value Help for Tree Table
+//	Value Helps
 //
 annotate AdminService.Books with {
+    author @Common.ValueList: {
+        CollectionPath: 'Authors',
+        Parameters    : [
+            {
+                $Type            : 'Common.ValueListParameterOut',
+                LocalDataProperty: author_ID,
+                ValueListProperty: 'ID',
+            },
+            {
+                $Type            : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty: 'externalIdDisplay',
+            },
+            {
+                $Type            : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty: 'name',
+            },
+        ],
+    };
     genre @(Common: {
         Label    : 'Genre',
         ValueList: {
