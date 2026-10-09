@@ -100,7 +100,7 @@ annotate my.Authors with @(
   ID @Common: {
     SemanticObject : 'Authors',
     Text           : name,
-    TextArrangement: #TextFirst,
+    TextArrangement: #TextSeparate,
   };
 };
 
