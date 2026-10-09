@@ -35,7 +35,7 @@ annotate my.Books with @(
     ]
   }
 ) {
-  ID     @Common          : {
+  ID @Common: {
     SemanticObject : 'Books',
     Text           : title,
     TextArrangement: #TextOnly
@@ -88,9 +88,11 @@ annotate my.Authors with @(
   Common.SemanticKey: [ID],
   UI                : {
     Identification : [{Value: name}],
-    SelectionFields: [externalId, name],
+    SelectionFields: [
+      externalId,
+      name
+    ],
     LineItem       : [
-      {Value: ID},
       {Value: externalId},
       {Value: name},
       {Value: dateOfBirth},
@@ -100,12 +102,12 @@ annotate my.Authors with @(
     ],
   }
 ) {
-  ID @Common: {
+  ID  @Common: {
     SemanticObject : 'Authors',
     Text           : name,
     TextArrangement: #TextSeparate,
     ExternalID     : externalId,
-  };
+  }  @UI.Hidden;
 };
 
 ////////////////////////////////////////////////////////////////////////////
