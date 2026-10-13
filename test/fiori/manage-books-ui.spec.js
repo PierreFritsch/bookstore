@@ -87,8 +87,9 @@ test("Author value help: Show Filters has ID+Name, table has ID+Name columns, ID
   const vhDialog = page.getByRole("dialog", { name: /Author/i });
   await expect(vhDialog).toBeVisible({ timeout: 15000 });
 
-  // Wait for at least one data row to be rendered
-  await expect(vhDialog.getByRole("heading", { name: /Items \(\d+\)/ })).toBeVisible({ timeout: 15000 });
+  // Wait for at least one data row to be rendered (the heading "Items" and count "(4)" are
+  // separate DOM nodes, but the grid has the combined accessible name "Items (4)")
+  await expect(vhDialog.getByRole("grid", { name: /Items \(\d+\)/ })).toBeVisible({ timeout: 15000 });
 
   // ── VH table columns ──────────────────────────────────────────────────────
   // Authors entity: ID @Common: { TextArrangement: #TextSeparate } →
@@ -114,7 +115,7 @@ test("Author value help: Show Filters has ID+Name, table has ID+Name columns, ID
   // Search to reduce rows, then select via rowsel + Shift+Space
   await vhDialog.getByRole("searchbox").fill("Emily");
   await vhDialog.getByRole("button", { name: "Go" }).click();
-  await expect(vhDialog.getByRole("heading", { name: "Items (1)" })).toBeVisible({ timeout: 10000 });
+  await expect(vhDialog.getByRole("grid", { name: "Items (1)" })).toBeVisible({ timeout: 10000 });
   await page.waitForTimeout(500);
 
   const emilyRow = vhDialog.getByRole("row", { name: /Emily/ }).first();
