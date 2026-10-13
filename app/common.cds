@@ -89,7 +89,6 @@ annotate my.Authors with @(
       name
     ],
     LineItem       : [
-      {Value: ID},
       {Value: externalId},
       {Value: name},
       {Value: dateOfBirth},
