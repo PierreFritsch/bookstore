@@ -122,10 +122,59 @@ annotate AdminService.Books.texts {
 
 // In addition we need to expose Languages through AdminService as a target for ValueList
 using {sap} from '@sap/cds/common';
+using {sap.capire.bookshop as my} from '@capire/bookshop';
 
 extend service AdminService {
     @readonly
     entity Languages as projection on sap.common.Languages;
+
+    @readonly
+    @cds.redirection.target: false
+    entity AuthorsVH  as projection on my.Authors {
+        ID,
+        externalId,
+        externalId as externalIdDisplay : String(10),
+        name
+    };
+}
+
+annotate AdminService.AuthorsVH with @(
+    UI.SelectionFields: [externalIdDisplay, name],
+    UI.LineItem       : [
+        {Value: externalIdDisplay},
+        {Value: name},
+    ]
+);
+
+annotate AdminService.AuthorsVH with {
+    ID                @Common.ExternalID: externalIdDisplay  @Common.TextArrangement: #TextFirst  @UI.Hidden;
+    externalId        @Common: { Text: name, TextArrangement: #TextFirst }  @UI.Hidden;
+    externalIdDisplay @title: '{i18n>ExternalID}';
+};
+
+annotate AdminService.Books with {
+    author @Common.ValueList: {
+        CollectionPath: 'AuthorsVH',
+        Parameters    : [
+            {
+                $Type            : 'Common.ValueListParameterOut',
+                LocalDataProperty: author_ID,
+                ValueListProperty: 'ID',
+            },
+            {
+                $Type            : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty: 'externalIdDisplay',
+            },
+            {
+                $Type            : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty: 'name',
+            },
+        ],
+    }  @Common: {
+        Text           : author.name,
+        TextArrangement: #TextFirst,
+        ExternalID     : author.externalId,
+    };
 }
 
 // Workaround for Fiori popup for asking user to enter a new UUID on Create
