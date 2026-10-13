@@ -15,6 +15,39 @@ test('Manage Books list shows author in TextFirst format "Emily Brontë (101)"',
   await expect(page.getByText('Emily Brontë (101)', { exact: true })).toBeVisible()
 })
 
+test('Group by Author: group separator row shows author #TextFirst "Emily Brontë (101)"', async ({ page }) => {
+  await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` })
+  await page.goto(`${BASE}/$fiori-preview/AdminService/Books#preview-app`)
+
+  // Wait for the table to load data
+  await expect(page.getByRole('row').nth(1)).toBeVisible({ timeout: 30000 })
+
+  // Open the p13n Settings dialog from the toolbar
+  await page.getByRole('button', { name: 'Settings' }).click()
+  const p13nDialog = page.getByRole('dialog')
+  await expect(p13nDialog).toBeVisible({ timeout: 10000 })
+
+  // Switch to the "Group" tab
+  await p13nDialog.getByRole('tab', { name: /Group/i }).click()
+
+  // The Group By field is a sap.m.ComboBox (text input with aria-haspopup="dialog").
+  // Type "Author" to filter suggestions, then pick the option from the suggestion list.
+  const groupByCombo = p13nDialog.getByRole('combobox', { name: 'Group By' })
+  await groupByCombo.fill('Author')
+  // sap.m.ComboBox shows suggestions in a list under the input
+  const suggestion = page.getByRole('option', { name: 'Author', exact: true })
+  await expect(suggestion).toBeVisible({ timeout: 5000 })
+  await suggestion.click()
+
+  // Confirm
+  await p13nDialog.getByRole('button', { name: 'OK' }).click()
+  await expect(p13nDialog).toBeHidden({ timeout: 10000 })
+
+  // The group separator row label includes the field name prefix: "Author: Emily Brontë (101)"
+  // author_ID uses @Common.Text: author.name and @Common.TextArrangement: #TextFirst
+  await expect(page.getByRole('row', { name: /Author: Emily Brontë \(101\)/ }).first()).toBeVisible({ timeout: 15000 })
+})
+
 test('Author value help: Show Filters has ID+Name, table has ID+Name columns, ID bare, Name bare, token #TextFirst, Cancel', async ({ page }) => {
   await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` })
   await page.goto(`${BASE}/$fiori-preview/AdminService/Books#preview-app`)
