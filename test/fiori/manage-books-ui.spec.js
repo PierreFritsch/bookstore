@@ -31,11 +31,11 @@ test('Group by Author: group separator row shows author #TextFirst "Emily Bront�
   await p13nDialog.getByRole("tab", { name: /Group/i }).click();
 
   // The Group By field is a sap.m.ComboBox (text input with aria-haspopup="dialog").
-  // Type "Author" to filter suggestions, then pick the option from the suggestion list.
+  // Type "External ID" to filter suggestions, then pick the option from the suggestion list.
   const groupByCombo = p13nDialog.getByRole("combobox", { name: "Group By" });
-  await groupByCombo.fill("Author");
+  await groupByCombo.fill("External ID"); // TODO should be "Author" ideally
   // sap.m.ComboBox shows suggestions in a list under the input
-  const suggestion = page.getByRole("option", { name: "Author", exact: true });
+  const suggestion = page.getByRole("option", { name: "External ID", exact: true });
   await expect(suggestion).toBeVisible({ timeout: 5000 });
   await suggestion.click();
 
@@ -43,9 +43,9 @@ test('Group by Author: group separator row shows author #TextFirst "Emily Bront�
   await p13nDialog.getByRole("button", { name: "OK" }).click();
   await expect(p13nDialog).toBeHidden({ timeout: 10000 });
 
-  // The group separator row label includes the field name prefix: "Author: Emily Brontë (BRONTE)"
+  // The group separator row label includes the field name prefix: "External ID: Emily Brontë (BRONTE)"
   // author_ID uses @Common.Text: author.name and @Common.TextArrangement: #TextFirst
-  await expect(page.getByRole("row", { name: /Author: Emily Brontë \(BRONTE\)/ }).first()).toBeVisible({ timeout: 15000 });
+  await expect(page.getByRole("row", { name: /External ID: Emily Brontë \(BRONTE\)/ }).first()).toBeVisible({ timeout: 15000 });
 });
 
 test('Author column settings quick actions: Sort By shows "External ID" and "Name"', async ({ page }) => {
