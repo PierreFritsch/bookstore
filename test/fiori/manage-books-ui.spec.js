@@ -94,14 +94,14 @@ test("Author value help: Show Filters has ID+Name, table has ID+Name columns, ID
   // External ID column shows bare key, Name is a separate column
   const columnHeaders = vhDialog.getByRole("columnheader");
   await expect(columnHeaders.filter({ hasText: "External ID" })).toBeVisible({ timeout: 10000 });
-  // TODO await expect(columnHeaders.filter({ hasText: "Name" })).toBeVisible({ timeout: 10000 });
-  // TODO await expect(columnHeaders).toHaveCount(2);
+  await expect(columnHeaders.filter({ hasText: "Name" })).toBeVisible({ timeout: 10000 });
+  await expect(columnHeaders).toHaveCount(2);
 
   // ── Cell content: bare ID "BRONTE", bare Name "Emily Bronte" ─────────────────
   // #TextSeparate means the ID cell shows only "BRONTE" (not "Emily Brontë (BRONTE)")
   // and the Name cell shows only "Emily Bronte" (not a combined value)
-  // TODO await expect(vhDialog.getByRole("gridcell", { name: "BRONTE", exact: true })).toBeVisible({ timeout: 10000 });
-  // TODO await expect(vhDialog.getByRole("gridcell", { name: "Emily Brontë", exact: true })).toBeVisible({ timeout: 10000 });
+  await expect(vhDialog.getByRole("gridcell", { name: "BRONTE", exact: true })).toBeVisible({ timeout: 10000 });
+  await expect(vhDialog.getByRole("gridcell", { name: "Emily Brontë", exact: true })).toBeVisible({ timeout: 10000 });
 
   // ── Show Filters panel: exactly 2 filter inputs (ID and Name) ─────────────
   await vhDialog.getByRole("button", { name: "Show Filters" }).click();
