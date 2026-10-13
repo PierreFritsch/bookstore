@@ -20,9 +20,9 @@
   "scripts": {
     "start": "cds-serve",
     "watch": "cds watch",
-    "chest": "chest",
+    "chest": "chest --exclude test/fiori",
     "jest": "jest",
-    "test": "chest"
+    "test": "chest --exclude test/fiori"
   },
   "cds": {
     "requires": {
