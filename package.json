@@ -27,6 +27,13 @@
     "postinstall": "patch-package"
   },
   "cds": {
+    "fiori": {
+      "preview": {
+        "ui5": {
+          "version": "1.153.0"
+        }
+      }
+    },
     "requires": {
       "ReviewsService": "hcql",
       "OrdersService": "hcql",
