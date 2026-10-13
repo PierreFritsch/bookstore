@@ -30,14 +30,13 @@ test('Group by Author: group separator row shows author #TextFirst "Emily Bront√
   // Switch to the "Group" tab
   await p13nDialog.getByRole("tab", { name: /Group/i }).click();
 
-  // The Group By field is a sap.m.ComboBox (text input with aria-haspopup="dialog").
-  // Type "External ID" to filter suggestions, then pick the option from the suggestion list.
+  // The Group By field is a sap.m.ComboBox. Use fill+Enter, which commits without needing the suggestion popover visible.
   const groupByCombo = p13nDialog.getByRole("combobox", { name: "Group By" });
-  await groupByCombo.fill("External ID"); // TODO should be "Author" ideally
-  // sap.m.ComboBox shows suggestions in a list under the input
-  const suggestion = page.getByRole("option", { name: "External ID", exact: true });
-  await expect(suggestion).toBeVisible({ timeout: 5000 });
-  await suggestion.click();
+  // fill() + Enter commits the ComboBox value without relying on the suggestion popover
+  // being visible (which fill() alone doesn't trigger in headless mode)
+  await groupByCombo.fill("External ID");
+  await page.keyboard.press("Enter");
+  await page.waitForTimeout(300);
 
   // Confirm
   await p13nDialog.getByRole("button", { name: "OK" }).click();
