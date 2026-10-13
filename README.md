@@ -24,6 +24,15 @@ npm install
 >
 > For more details on this, see [Using @capire modules from GitHub Packages](https://qmacro.org/blog/posts/2025/10/12/using-capire-modules-from-github-packages/).
 
+TLDR:
+
+1. https://github.com/settings/tokens > Generate new token (classic) with scope `read:packages` > Copy the personal access token
+2. npm login --scope @capire --registry=https://npm.pkg.github.com
+
+    - Username: GitHub username lowercase
+    - Password: Paste the PAT
+3. `export NPM_TOKEN=` (and paste the PAT)
+4. `npm install`
 
 ### Run it
 
