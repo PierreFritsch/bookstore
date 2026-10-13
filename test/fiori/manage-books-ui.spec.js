@@ -48,7 +48,7 @@ test('Group by Author: group separator row shows author #TextFirst "Emily BrontÃ
   await expect(page.getByRole("row", { name: /Author: Emily BrontÃ« \(BRONTE\)/ }).first()).toBeVisible({ timeout: 15000 });
 });
 
-test('Author column settings quick actions: Sort By shows "Author" and "Name"', async ({ page }) => {
+test('Author column settings quick actions: Sort By shows "External ID" and "Name"', async ({ page }) => {
   await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` });
   await page.goto(`${BASE}/$fiori-preview/AdminService/Books#preview-app`);
 
@@ -61,9 +61,9 @@ test('Author column settings quick actions: Sort By shows "Author" and "Name"', 
   const columnSettings = page.getByRole("dialog", { name: "Column Settings" });
   await expect(columnSettings).toBeVisible({ timeout: 5000 });
 
-  // The "Sort By" list should contain exactly "Author" and "Name"
+  // The "Sort By" list should contain exactly "External ID" and "Name"
   const sortByList = columnSettings.getByRole("list", { name: "Sort By" });
-  await expect(sortByList.getByText("Author", { exact: true })).toBeVisible();
+  await expect(sortByList.getByText("External ID", { exact: true })).toBeVisible();
   await expect(sortByList.getByText("Name", { exact: true })).toBeVisible();
   await expect(sortByList.getByRole("listitem")).toHaveCount(2);
 
