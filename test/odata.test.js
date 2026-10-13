@@ -32,8 +32,8 @@ describe ('browse books', ()=>{
       params: { $search: 'Po', $select: `title,author,genre`, $expand: `currency($select=code,name,descr,symbol)` },
     }}`
     expect(data.value).to.containSubset([
-      { ID: 251, title: 'The Raven', author: 'Edgar Allan Poe', genre:'Poetry', currency:USD },
-      { ID: 252, title: 'Eleonora', author: 'Edgar Allan Poe', genre:'Poetry', currency:USD },
+      { ID: 251, title: 'The Raven', author: 'Edgar Allan Poe', genre:'Mystery', currency:USD },
+      { ID: 252, title: 'Eleonora', author: 'Edgar Allan Poe', genre:'Romance', currency:USD },
     ])
   })
 
@@ -42,8 +42,8 @@ describe ('browse books', ()=>{
       params: { $search: 'Po', $select: `title,author,genre,currency/code` },
     }}`
     expect(data.value).to.containSubset([
-      { ID: 251, title: 'The Raven', author: 'Edgar Allan Poe', genre:'Poetry', currency_code:'USD' },
-      { ID: 252, title: 'Eleonora', author: 'Edgar Allan Poe', genre:'Poetry', currency_code:'USD' },
+      { ID: 251, title: 'The Raven', author: 'Edgar Allan Poe', genre:'Mystery', currency_code:'USD' },
+      { ID: 252, title: 'Eleonora', author: 'Edgar Allan Poe', genre:'Romance', currency_code:'USD' },
     ])
   })
 
