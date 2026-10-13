@@ -48,6 +48,29 @@ test('Group by Author: group separator row shows author #TextFirst "Emily BrontÃ
   await expect(page.getByRole('row', { name: /Author: Emily BrontÃ« \(101\)/ }).first()).toBeVisible({ timeout: 15000 })
 })
 
+test('Author column settings quick actions: Sort By shows "Author" and "Name"', async ({ page }) => {
+  await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` })
+  await page.goto(`${BASE}/$fiori-preview/AdminService/Books#preview-app`)
+
+  // Wait for the table to load data
+  await expect(page.getByRole('row').nth(1)).toBeVisible({ timeout: 30000 })
+
+  // Click the "Author" column header label to open the Column Settings quick actions popover
+  await page.getByRole('columnheader', { name: 'Author' }).getByText('Author').click()
+
+  const columnSettings = page.getByRole('dialog', { name: 'Column Settings' })
+  await expect(columnSettings).toBeVisible({ timeout: 5000 })
+
+  // The "Sort By" list should contain exactly "Author" and "Name"
+  const sortByList = columnSettings.getByRole('list', { name: 'Sort By' })
+  await expect(sortByList.getByText('Author', { exact: true })).toBeVisible()
+  await expect(sortByList.getByText('Name', { exact: true })).toBeVisible()
+  await expect(sortByList.getByRole('listitem')).toHaveCount(2)
+
+  await columnSettings.getByRole('button', { name: 'Close' }).click()
+  await expect(columnSettings).toBeHidden({ timeout: 5000 })
+})
+
 test('Author value help: Show Filters has ID+Name, table has ID+Name columns, ID bare, Name bare, token #TextFirst, Cancel', async ({ page }) => {
   await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` })
   await page.goto(`${BASE}/$fiori-preview/AdminService/Books#preview-app`)
