@@ -92,9 +92,9 @@ test("Author value help: Show Filters has ID+Name, table has ID+Name columns, ID
 
   // ── VH table columns ──────────────────────────────────────────────────────
   // Authors entity: ID @Common: { TextArrangement: #TextSeparate } →
-  // ID column shows bare key, Name is a separate column
+  // External ID column shows bare key, Name is a separate column
   const columnHeaders = vhDialog.getByRole("columnheader");
-  await expect(columnHeaders.filter({ hasText: "ID" })).toBeVisible({ timeout: 10000 });
+  await expect(columnHeaders.filter({ hasText: "External ID" })).toBeVisible({ timeout: 10000 });
   await expect(columnHeaders.filter({ hasText: "Name" })).toBeVisible({ timeout: 10000 });
   await expect(columnHeaders).toHaveCount(2);
 
