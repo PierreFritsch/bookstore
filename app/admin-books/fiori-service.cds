@@ -146,8 +146,6 @@ annotate AdminService.Books with {
             },
         ],
     }  @Common: {
-        Text           : author.name,
-        TextArrangement: #TextFirst,
         ExternalID     : author.externalId,
     };
 }
