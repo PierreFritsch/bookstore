@@ -58,6 +58,8 @@ annotate AdminService.Authors with @(UI: {
       Label: '{i18n>Age}'
     },
   ]},
+
+  // Filter Fields in the Filter Bar of the Authors list report
   SelectionFields    : [
     externalIdDisplay,
     name
