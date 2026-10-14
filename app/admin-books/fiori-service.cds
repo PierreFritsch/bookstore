@@ -76,6 +76,15 @@ annotate AdminService.Genres with {
     ID @UI.Hidden;
 };
 
+
+////////////////////////////////////////////////////////////////////////////
+//
+//	Value Help for Books
+//
+annotate AdminService.Books with {
+  author @ValueList.entity: 'AuthorsVH';
+}
+
 ////////////////////////////////////////////////////////////
 //
 //  Draft for Localized Data

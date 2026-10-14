@@ -35,12 +35,11 @@ annotate my.Books with @(
     ]
   }
 ) {
-  ID     @Common          : {
+  ID @Common: {
     SemanticObject : 'Books',
     Text           : title,
     TextArrangement: #TextOnly
   };
-  author @ValueList.entity: 'Authors';
 };
 
 annotate common.Currencies with {
