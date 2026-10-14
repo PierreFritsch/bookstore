@@ -7,6 +7,14 @@ annotate AdminService.Authors with @odata.draft.enabled;
 //	Authors Object Page
 //
 annotate AdminService.Authors with @(UI: {
+  LineItem           : [
+    {Value: externalIdDisplay},
+    {Value: name},
+    {Value: dateOfBirth},
+    {Value: dateOfDeath},
+    {Value: placeOfBirth},
+    {Value: placeOfDeath},
+  ],
   HeaderInfo         : {
     TypeName      : 'Author',
     TypeNamePlural: 'Authors',

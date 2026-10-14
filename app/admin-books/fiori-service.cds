@@ -122,7 +122,6 @@ annotate AdminService.Books.texts {
 
 // In addition we need to expose Languages through AdminService as a target for ValueList
 using {sap} from '@sap/cds/common';
-using {sap.capire.bookshop as my} from '@capire/bookshop';
 
 extend service AdminService {
     @readonly
@@ -130,16 +129,20 @@ extend service AdminService {
 
     @readonly
     @cds.redirection.target: false
-    entity AuthorsVH  as projection on my.Authors {
-        ID,
-        externalId,
-        externalId as externalIdDisplay : String(10),
-        name
-    };
+    entity AuthorsVH as
+        projection on AdminService.Authors {
+            ID,
+            externalId,
+            externalIdDisplay,
+            name
+        };
 }
 
 annotate AdminService.AuthorsVH with @(
-    UI.SelectionFields: [externalIdDisplay, name],
+    UI.SelectionFields: [
+        externalIdDisplay,
+        name
+    ],
     UI.LineItem       : [
         {Value: externalIdDisplay},
         {Value: name},
@@ -147,13 +150,15 @@ annotate AdminService.AuthorsVH with @(
 );
 
 annotate AdminService.AuthorsVH with {
-    ID                @Common.ExternalID: externalIdDisplay  @Common.TextArrangement: #TextFirst  @UI.Hidden;
-    externalId        @Common: { Text: name, TextArrangement: #TextFirst }  @UI.Hidden;
-    externalIdDisplay @title: '{i18n>ExternalID}';
+    ID          @Common.ExternalID: externalIdDisplay  @Common.TextArrangement: #TextFirst  @UI.Hidden;
+    externalId  @Common           : {
+        Text           : name,
+        TextArrangement: #TextFirst
+    }                                                  @UI.Hidden;
 };
 
 annotate AdminService.Books with {
-    author @Common.ValueList: {
+    author  @Common.ValueList: {
         CollectionPath: 'AuthorsVH',
         Parameters    : [
             {

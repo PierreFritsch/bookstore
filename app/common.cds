@@ -142,6 +142,10 @@ annotate my.Authors with {
   placeOfDeath @title: '{i18n>PlaceOfDeath}';
 }
 
+annotate AdminService.Authors with {
+  externalIdDisplay @title: '{i18n>ExternalID}';
+}
+
 ////////////////////////////////////////////////////////////////////////////
 //
 //	Languages List
