@@ -24,6 +24,10 @@ annotate AdminService.Authors with @(UI: {
       Value                : externalIdDisplay,
       ![@HTML5.CssDefaults]: {width: '8em'}
     },
+    {
+      Value        : externalId,
+      ![@UI.Hidden]: true
+    },
     {Value: name},
     {Value: dateOfBirth},
     {Value: dateOfDeath},
