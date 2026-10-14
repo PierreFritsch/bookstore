@@ -14,16 +14,24 @@
   },
   "devDependencies": {
     "@cap-js/cds-test": "^1",
-    "@cap-js/sqlite": ">=1"
+    "@cap-js/sqlite": ">=1",
+    "@playwright/test": "^1.64.0"
   },
   "scripts": {
     "start": "cds-serve",
     "watch": "cds watch",
-    "chest": "chest",
+    "chest": "chest --exclude test/fiori",
     "jest": "jest",
-    "test": "chest"
+    "test": "chest --exclude test/fiori"
   },
   "cds": {
+    "fiori": {
+      "preview": {
+        "ui5": {
+          "version": "1.153.0"
+        }
+      }
+    },
     "requires": {
       "ReviewsService": "hcql",
       "OrdersService": "hcql",
