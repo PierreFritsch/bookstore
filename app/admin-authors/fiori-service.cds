@@ -2,11 +2,6 @@ using {AdminService} from '@capire/bookshop';
 
 annotate AdminService.Authors with @odata.draft.enabled;
 
-annotate AdminService.Authors with @UI.SelectionFields: [
-  externalIdDisplay,
-  name
-];
-
 ////////////////////////////////////////////////////////////////////////////
 //
 //	Authors Object Page
@@ -63,8 +58,11 @@ annotate AdminService.Authors with @(UI: {
       Label: '{i18n>Age}'
     },
   ]},
+  SelectionFields    : [
+    externalIdDisplay,
+    name
+  ]
 });
-
 
 // Workaround to avoid errors for unknown db-specific calculated fields above
 extend sap.capire.bookshop.Authors with {
@@ -73,8 +71,9 @@ extend sap.capire.bookshop.Authors with {
 }
 
 annotate AdminService.Authors with {
-  age      @Common.Label: '{i18n>Age}';
-  lifetime @Common.Label: '{i18n>Lifetime}'
+  age               @Common.Label: '{i18n>Age}';
+  lifetime          @Common.Label: '{i18n>Lifetime}';
+  externalIdDisplay @title       : '{i18n>ExternalID}';
 }
 
 annotate AdminService.Authors with @(Common.SideEffects: {
@@ -92,3 +91,28 @@ annotate AdminService.Authors with @(Common.SideEffects: {
 annotate AdminService.Authors with {
   ID @Core.Computed;
 }
+
+extend service AdminService {
+  @readonly
+  @cds.redirection.target: false
+  entity AuthorsVH as
+    projection on AdminService.Authors {
+      ID,
+      externalId,
+      externalIdDisplay,
+      name
+    };
+}
+
+annotate AdminService.AuthorsVH with @(UI.SelectionFields: [
+  externalIdDisplay,
+  name
+], );
+
+annotate AdminService.AuthorsVH with {
+  ID          @Common.ExternalID: externalIdDisplay  @Common.TextArrangement: #TextFirst  @UI.Hidden;
+  externalId  @Common           : {
+    Text           : name,
+    TextArrangement: #TextFirst
+  }                                                  @UI.Hidden;
+};

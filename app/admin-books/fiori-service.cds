@@ -1,7 +1,6 @@
 using {AdminService} from '@capire/bookshop';
 using from '../common'; // to help UI linter get the complete annotations
 
-
 ////////////////////////////////////////////////////////////////////////////
 //
 //	Books Object Page
@@ -126,30 +125,7 @@ using {sap} from '@sap/cds/common';
 extend service AdminService {
     @readonly
     entity Languages as projection on sap.common.Languages;
-
-    @readonly
-    @cds.redirection.target: false
-    entity AuthorsVH as
-        projection on AdminService.Authors {
-            ID,
-            externalId,
-            externalIdDisplay,
-            name
-        };
 }
-
-annotate AdminService.AuthorsVH with @(UI.SelectionFields: [
-    externalIdDisplay,
-    name
-], );
-
-annotate AdminService.AuthorsVH with {
-    ID          @Common.ExternalID: externalIdDisplay  @Common.TextArrangement: #TextFirst  @UI.Hidden;
-    externalId  @Common           : {
-        Text           : name,
-        TextArrangement: #TextFirst
-    }                                                  @UI.Hidden;
-};
 
 annotate AdminService.Books with {
     author  @Common.ValueList: {
