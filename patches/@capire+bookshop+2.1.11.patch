@@ -39,7 +39,7 @@ index 7ae9c46..0a48fd3 100644
 -  entity Authors as projection on my.Authors;
 +  entity Authors as projection on my.Authors {
 +    *,
-+    externalId as externalIdDisplay,
++    externalId as externalIdDisplay : String(10),
 +  };
 -  entity Books as projection on my.Books;
 +  entity Books as projection on my.Books {
