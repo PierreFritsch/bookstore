@@ -92,8 +92,20 @@ annotate AdminService.Authors with {
   ID @Core.Computed;
 }
 
+////////////////////////////////////////////////////////////////////////////
+//
+//	Authors Value Help
+//
+
+// AuthorsVH exists solely to scope VH-specific annotations away from the Authors list page.
+// Because Authors.externalId carries @Common.Text: name + @Common.TextArrangement: #TextFirst,
+// FEv4 automatically expands any VH column referencing externalId/externalIdDisplay into two
+// "External ID" columns (one TextFirst, one bare). The only way to suppress the TextFirst
+// column in the VH dialog — without hiding externalId globally on Authors — is to annotate
+// it @UI.Hidden on a separate projection scoped to the VH context.
 extend service AdminService {
   @readonly
+  // Prevent FEv4 from redirecting Author navigations to this VH entity instead of Authors.
   @cds.redirection.target: false
   entity AuthorsVH as
     projection on AdminService.Authors {
@@ -107,12 +119,16 @@ extend service AdminService {
 annotate AdminService.AuthorsVH with @(UI.SelectionFields: [
   externalIdDisplay,
   name
-], );
+]);
 
 annotate AdminService.AuthorsVH with {
-  ID          @Common.ExternalID: externalIdDisplay  @Common.TextArrangement: #TextFirst  @UI.Hidden;
-  externalId  @Common           : {
-    Text           : name,
-    TextArrangement: #TextFirst
-  }                                                  @UI.Hidden;
+  ID         @UI.Hidden
+             @Common.ExternalID     : externalIdDisplay
+             @Common.TextArrangement: #TextFirst;
+
+  // @UI.Hidden suppresses the TextFirst "Name (ExternalID)" column that FEv4 would otherwise
+  // render automatically because of @Common.Text: name on externalId.
+  externalId @UI.Hidden
+             @Common.Text           : name
+             @Common.TextArrangement: #TextFirst;
 };
