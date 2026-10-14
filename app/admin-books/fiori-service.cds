@@ -138,16 +138,10 @@ extend service AdminService {
         };
 }
 
-annotate AdminService.AuthorsVH with @(
-    UI.SelectionFields: [
-        externalIdDisplay,
-        name
-    ],
-    UI.LineItem       : [
-        {Value: externalIdDisplay},
-        {Value: name},
-    ]
-);
+annotate AdminService.AuthorsVH with @(UI.SelectionFields: [
+    externalIdDisplay,
+    name
+], );
 
 annotate AdminService.AuthorsVH with {
     ID          @Common.ExternalID: externalIdDisplay  @Common.TextArrangement: #TextFirst  @UI.Hidden;
