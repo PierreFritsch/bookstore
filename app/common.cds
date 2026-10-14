@@ -82,10 +82,17 @@ annotate my.Books with {
 //
 annotate my.Authors with @(
   Common.SemanticKey: [ID],
-  Capabilities      : {FilterRestrictions: {
-    $Type                  : 'Capabilities.FilterRestrictionsType',
-    NonFilterableProperties: ['externalId']
-  }},
+  Capabilities      : {
+    SortRestrictions  : {
+      $Type                : 'Capabilities.SortRestrictionsType',
+      NonSortableProperties: ['externalId']
+    },
+    FilterRestrictions: {
+      $Type                  : 'Capabilities.FilterRestrictionsType',
+      NonFilterableProperties: ['externalId']
+    }
+  },
+
   UI                : {
     Identification : [{Value: name}],
     SelectionFields: [
