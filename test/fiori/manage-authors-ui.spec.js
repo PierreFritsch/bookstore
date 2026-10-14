@@ -4,13 +4,13 @@ const { openAdaptFiltersDialog, getAvailableAddFilterOptions, assertP13nSortOpti
 const BASE = process.env.CDS_URL ?? "http://localhost:4004";
 const AUTH = Buffer.from("alice:").toString("base64");
 
-test("Manage Authors Adapt Filters: External ID and Name are selected; Add Filter lists expected options", async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` });
   await page.goto(`${BASE}/$fiori-preview/AdminService/Authors#preview-app`);
-
-  // Wait for the table to load data
   await expect(page.getByRole("row").nth(1)).toBeVisible({ timeout: 30000 });
+});
 
+test("Manage Authors Adapt Filters: External ID and Name are selected; Add Filter lists expected options", async ({ page }) => {
   // Open the Adapt Filters dialog
   const dialog = await openAdaptFiltersDialog(page, expect);
 
@@ -28,12 +28,6 @@ test("Manage Authors Adapt Filters: External ID and Name are selected; Add Filte
 });
 
 test("Manage Authors Sort tab: lists expected sort options", async ({ page }) => {
-  await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` });
-  await page.goto(`${BASE}/$fiori-preview/AdminService/Authors#preview-app`);
-
-  // Wait for the table to load data
-  await expect(page.getByRole("row").nth(1)).toBeVisible({ timeout: 30000 });
-
   // Open the p13n Settings dialog
   await page.getByRole("button", { name: "Settings" }).click();
   const p13nDialog = page.getByRole("dialog", { name: "View Settings" });
@@ -59,12 +53,6 @@ test("Manage Authors Sort tab: lists expected sort options", async ({ page }) =>
 });
 
 test("Manage Authors list: first column is External ID, second column is Name, first row is BRONTC / Charlotte Brontë", async ({ page }) => {
-  await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` });
-  await page.goto(`${BASE}/$fiori-preview/AdminService/Authors#preview-app`);
-
-  // Wait for the table to load data
-  await expect(page.getByRole("row").nth(1)).toBeVisible({ timeout: 30000 });
-
   // Column order: nth(0) is "Select All", content columns start at nth(1)
   const headers = page.getByRole("columnheader");
   await expect(headers.nth(1)).toHaveText("External ID", { exact: true });
