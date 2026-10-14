@@ -1,5 +1,5 @@
 const { test, expect } = require("@playwright/test");
-const { openAdaptFiltersDialog, getAvailableAddFilterOptions } = require("./filter-bar-test-helpers");
+const { openAdaptFiltersDialog, getAvailableAddFilterOptions, assertP13nSortOptions } = require("./fiori-test-helpers");
 
 const BASE = process.env.CDS_URL ?? "http://localhost:4004";
 const AUTH = Buffer.from("alice:").toString("base64");
@@ -25,6 +25,37 @@ test("Manage Authors Adapt Filters: External ID and Name are selected; Add Filte
 
   // Assert the available "Add Filter" options (order-insensitive)
   expect(addFilterOptions.sort()).toEqual(["Age", "Date of Birth", "Date of Death", "ID", "Lifetime", "Place of Birth", "Place of Death"]);
+});
+
+test("Manage Authors Sort tab: lists expected sort options", async ({ page }) => {
+  await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` });
+  await page.goto(`${BASE}/$fiori-preview/AdminService/Authors#preview-app`);
+
+  // Wait for the table to load data
+  await expect(page.getByRole("row").nth(1)).toBeVisible({ timeout: 30000 });
+
+  // Open the p13n Settings dialog
+  await page.getByRole("button", { name: "Settings" }).click();
+  const p13nDialog = page.getByRole("dialog", { name: "View Settings" });
+  await expect(p13nDialog).toBeVisible({ timeout: 10000 });
+
+  await assertP13nSortOptions(page, p13nDialog, [
+    "Age",
+    "Changed By",
+    "Changed On",
+    "Created By",
+    "Created On",
+    "Date of Birth",
+    "Date of Death",
+    "External ID",
+    "Lifetime",
+    "Name",
+    "Place of Birth",
+    "Place of Death",
+  ]);
+
+  await p13nDialog.getByRole("button", { name: "Cancel" }).click();
+  await expect(p13nDialog).toBeHidden({ timeout: 5000 });
 });
 
 test("Manage Authors list: first column is External ID, second column is Name, first row is BRONTC / Charlotte Brontë", async ({ page }) => {
