@@ -70,7 +70,7 @@ test('Author column settings quick actions: Sort By shows "External ID" and "Nam
   await expect(columnSettings).toBeHidden({ timeout: 5000 });
 });
 
-test("Author value help: Show Filters has ID+Name, table has ID+Name columns, ID bare, Name bare, token #TextFirst, Cancel", async ({ page }) => {
+test("Author value help: Show Filters has ExternalID+Name, table has ExternalID+Name columns, ExternalID bare, Name bare, token #TextFirst, Cancel", async ({ page }) => {
   await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` });
   await page.goto(`${BASE}/$fiori-preview/AdminService/Books#preview-app`);
 
