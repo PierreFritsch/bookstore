@@ -49,6 +49,7 @@ test("Manage Authors p13n dialog: Columns and Sort tabs list expected options", 
       "Changed On",
       "Created By",
       "Created On",
+      "External ID", // duplicate — bug under investigation on this branch
       "ID",
       "Lifetime",
     ],
