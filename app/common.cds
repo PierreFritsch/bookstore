@@ -109,11 +109,9 @@ annotate my.Authors with @(
     ],
   }
 ) {
-  ID         @Common: {
-    SemanticObject : 'Authors',
-    Text           : name,
-    TextArrangement: #TextSeparate,
-    ExternalID     : externalId,
+  ID         @UI.Hidden  @Common: {
+    SemanticObject: 'Authors',
+    ExternalID    : externalId,
   };
   externalId @Common: {
     Text           : name,
