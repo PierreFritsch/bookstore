@@ -7,8 +7,18 @@ annotate AdminService.Authors with @odata.draft.enabled;
 //	Authors Object Page
 //
 annotate AdminService.Authors with @(UI: {
+  PresentationVariant: {
+    SortOrder     : [{
+      Property  : externalIdDisplay,
+      Descending: false
+    }],
+    Visualizations: ['@UI.LineItem'],
+  },
   LineItem           : [
-    {Value: externalIdDisplay},
+    {
+      Value                : externalIdDisplay,
+      ![@HTML5.CssDefaults]: {width: '8em'}
+    },
     {Value: name},
     {Value: dateOfBirth},
     {Value: dateOfDeath},
