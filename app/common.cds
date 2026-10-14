@@ -91,13 +91,8 @@ annotate my.Authors with @(
       NonFilterableProperties: ['externalId']
     }
   },
-
   UI                : {
     Identification : [{Value: name}],
-    SelectionFields: [
-      externalId,
-      name
-    ],
   }
 ) {
   ID         @UI.Hidden  @Common: {
