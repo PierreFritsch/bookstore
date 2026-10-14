@@ -33,12 +33,13 @@ diff --git a/node_modules/@capire/bookshop/srv/admin-service.cds b/node_modules/
 index 7ae9c46..0a48fd3 100644
 --- a/node_modules/@capire/bookshop/srv/admin-service.cds
 +++ b/node_modules/@capire/bookshop/srv/admin-service.cds
-@@ -2,7 +2,19 @@ using { sap.capire.bookshop as my } from '../db/schema';
+@@ -2,7 +2,20 @@ using { sap.capire.bookshop as my } from '../db/schema';
 
  service AdminService @(odata:'/admin') {
 -  entity Authors as projection on my.Authors;
 +  entity Authors as projection on my.Authors {
 +    *,
++    // needed to display the bare ID in the Authors list report and value help
 +    externalId as externalIdDisplay : String(10),
 +  };
 -  entity Books as projection on my.Books;
