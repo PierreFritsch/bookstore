@@ -193,4 +193,35 @@ async function assertP13nSortOptions(page, dialog, expectedOptions) {
   ).toBe(true);
 }
 
-module.exports = { openAdaptFiltersDialog, getAvailableAddFilterOptions, assertP13nSortOptions };
+/**
+ * In the View Settings dialog's Columns tab, asserts that:
+ * - the selected (visible) columns match `selectedColumns` in order
+ * - all rows (selected + unselected) match `allColumns` (order-insensitive)
+ *
+ * @param {import('@playwright/test').Locator} dialog
+ * @param {string[]} selectedColumns  - columns that should be checked/selected, in display order
+ * @param {string[]} allColumns       - every column that should appear in the list (selected or not)
+ */
+async function assertP13nColumns(dialog, selectedColumns, allColumns) {
+  await dialog.getByRole("tab", { name: "Columns" }).click();
+  const grid = dialog.getByRole("grid");
+  const selectedRows = grid.getByRole("row", { selected: true });
+  await expect(selectedRows).toHaveCount(selectedColumns.length, { timeout: 10000 });
+  for (let i = 0; i < selectedColumns.length; i++) {
+    await expect(selectedRows.nth(i)).toContainText(selectedColumns[i]);
+  }
+  const rows = grid.getByRole("row");
+  await rows.first().waitFor({ timeout: 10000 });
+  const rowTexts = await rows.evaluateAll((els) =>
+    els
+      .slice(1)
+      .map((el) => (el.textContent ?? "").replace(/Item\s+Selection/g, "").trim())
+      .filter(Boolean)
+  );
+  expect(
+    rowTexts.sort(),
+    `P13n columns mismatch\n  actual:   ${JSON.stringify(rowTexts.sort())}\n  expected: ${JSON.stringify([...allColumns].sort())}`
+  ).toEqual([...allColumns].sort());
+}
+
+module.exports = { openAdaptFiltersDialog, getAvailableAddFilterOptions, assertP13nSortOptions, assertP13nColumns };

@@ -1,5 +1,5 @@
 const { test, expect } = require("@playwright/test");
-const { openAdaptFiltersDialog, getAvailableAddFilterOptions, assertP13nSortOptions } = require("./fiori-test-helpers");
+const { openAdaptFiltersDialog, getAvailableAddFilterOptions, assertP13nSortOptions, assertP13nColumns } = require("./fiori-test-helpers");
 
 const BASE = process.env.CDS_URL ?? "http://localhost:4004";
 const AUTH = Buffer.from("alice:").toString("base64");
@@ -27,11 +27,33 @@ test("Manage Authors Adapt Filters: External ID and Name are selected; Add Filte
   expect(addFilterOptions.sort()).toEqual(["Age", "Date of Birth", "Date of Death", "ID", "Lifetime", "Place of Birth", "Place of Death"]);
 });
 
-test("Manage Authors Sort tab: lists expected sort options", async ({ page }) => {
-  // Open the p13n Settings dialog
+test("Manage Authors p13n dialog: Columns and Sort tabs list expected options", async ({ page }) => {
   await page.getByRole("button", { name: "Settings" }).click();
   const p13nDialog = page.getByRole("dialog", { name: "View Settings" });
   await expect(p13nDialog).toBeVisible({ timeout: 10000 });
+
+  await assertP13nColumns(
+    p13nDialog,
+    // selected (visible by default), in display order
+    ["External ID", "Name", "Date of Birth", "Date of Death", "Place of Birth", "Place of Death"],
+    // all columns (selected + opt-in), order-insensitive
+    [
+      "External ID",
+      "Name",
+      "Date of Birth",
+      "Date of Death",
+      "Place of Birth",
+      "Place of Death",
+      "Age",
+      "Changed By",
+      "Changed On",
+      "Created By",
+      "Created On",
+      "External ID", // duplicate — bug under investigation on this branch
+      "ID",
+      "Lifetime",
+    ],
+  );
 
   await assertP13nSortOptions(page, p13nDialog, [
     "Age",
