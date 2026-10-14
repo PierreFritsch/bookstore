@@ -79,7 +79,7 @@ annotate AdminService.Genres with {
 
 ////////////////////////////////////////////////////////////////////////////
 //
-//	Value Help for Books
+//	Value Help for Authors
 //
 annotate AdminService.Books with {
   author @ValueList.entity: 'AuthorsVH';
