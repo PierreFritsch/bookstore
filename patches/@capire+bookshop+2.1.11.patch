@@ -44,7 +44,7 @@ index 7ae9c46..0a48fd3 100644
 -  entity Books as projection on my.Books;
 +  entity Books as projection on my.Books {
 +    ID,
-+    author,
++    author: redirected to Authors,
 +    title,
 +    descr,
 +    genre,
