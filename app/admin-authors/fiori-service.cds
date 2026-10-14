@@ -37,8 +37,8 @@ annotate AdminService.Authors with @(UI: {
     {Value: placeOfDeath},
   ],
   HeaderInfo         : {
-    TypeName      : 'Author',
-    TypeNamePlural: 'Authors',
+    TypeName      : '{i18n>Author}',
+    TypeNamePlural: '{i18n>Authors}',
     Description   : {Value: lifetime}
   },
   Facets             : [
