@@ -154,8 +154,6 @@ annotate AdminService.Books with {
                 ValueListProperty: 'name',
             },
         ],
-    }  @Common: {
-        ExternalID     : author.externalId,
     };
 }
 
