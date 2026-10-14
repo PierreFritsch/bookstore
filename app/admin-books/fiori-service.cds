@@ -136,27 +136,6 @@ extend service AdminService {
     entity Languages as projection on sap.common.Languages;
 }
 
-annotate AdminService.Books with {
-    author  @Common.ValueList: {
-        CollectionPath: 'AuthorsVH',
-        Parameters    : [
-            {
-                $Type            : 'Common.ValueListParameterOut',
-                LocalDataProperty: author_ID,
-                ValueListProperty: 'ID',
-            },
-            {
-                $Type            : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty: 'externalIdDisplay',
-            },
-            {
-                $Type            : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty: 'name',
-            },
-        ],
-    };
-}
-
 // Workaround for Fiori popup for asking user to enter a new UUID on Create
 annotate AdminService.Books with {
     ID @Core.Computed;

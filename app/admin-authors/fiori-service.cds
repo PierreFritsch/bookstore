@@ -109,6 +109,7 @@ extend service AdminService {
   @readonly
   // Prevent FEv4 from redirecting Author navigations to this VH entity instead of Authors.
   @cds.redirection.target: false
+  @cds.odata.valuelist
   entity AuthorsVH as
     projection on AdminService.Authors {
       ID,
@@ -118,10 +119,10 @@ extend service AdminService {
     };
 }
 
-annotate AdminService.AuthorsVH with @(UI.SelectionFields: [
-  externalIdDisplay,
-  name
-]);
+annotate AdminService.AuthorsVH with @(
+  UI.SelectionFields : [externalIdDisplay, name],
+  UI.Identification  : null  // clear inherited [{ Value: name }] so @ValueList.entity falls through to displaying all non-key String fields as columns in the VH dialog
+);
 
 annotate AdminService.AuthorsVH with {
   ID         @UI.Hidden
