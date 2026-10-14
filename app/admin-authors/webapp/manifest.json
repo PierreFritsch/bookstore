@@ -98,6 +98,15 @@
                     "route": "AuthorsDetails"
                   }
                 }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "columns": {
+                    "DataField::externalId": {
+                      "availability": "Hidden"
+                    }
+                  }
+                }
               }
             }
           }
