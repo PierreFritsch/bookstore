@@ -67,8 +67,9 @@ extend sap.capire.bookshop.Authors with {
 }
 
 annotate AdminService.Authors with {
-  age      @Common.Label: '{i18n>Age}';
-  lifetime @Common.Label: '{i18n>Lifetime}'
+  age        @Common.Label: '{i18n>Age}';
+  lifetime   @Common.Label: '{i18n>Lifetime}';
+  externalId @UI.Hidden;
 }
 
 annotate AdminService.Authors with @(Common.SideEffects: {
