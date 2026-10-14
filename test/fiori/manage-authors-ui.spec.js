@@ -1,7 +1,31 @@
 const { test, expect } = require("@playwright/test");
+const { openAdaptFiltersDialog, getAvailableAddFilterOptions } = require("./filter-bar-test-helpers");
 
 const BASE = process.env.CDS_URL ?? "http://localhost:4004";
 const AUTH = Buffer.from("alice:").toString("base64");
+
+test("Manage Authors Adapt Filters: External ID and Name are selected; Add Filter lists expected options", async ({ page }) => {
+  await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` });
+  await page.goto(`${BASE}/$fiori-preview/AdminService/Authors#preview-app`);
+
+  // Wait for the table to load data
+  await expect(page.getByRole("row").nth(1)).toBeVisible({ timeout: 30000 });
+
+  // Open the Adapt Filters dialog
+  const dialog = await openAdaptFiltersDialog(page, expect);
+
+  // Assert External ID and Name are visible (selected) in the dialog
+  // The filter rows are role="listitem"; visibility is indicated by the eye icon button
+  // We check that both labels appear in the dialog list
+  await expect(dialog.getByText("External ID", { exact: true })).toBeVisible({ timeout: 5000 });
+  await expect(dialog.getByText("Name", { exact: true })).toBeVisible({ timeout: 5000 });
+
+  // Read available options from the "Add Filter" dropdown
+  const addFilterOptions = await getAvailableAddFilterOptions(page, dialog, expect);
+
+  // Assert the available "Add Filter" options (order-insensitive)
+  expect(addFilterOptions.sort()).toEqual(["Age", "Date of Birth", "Date of Death", "External ID", "ID", "Lifetime", "Place of Birth", "Place of Death"]);
+});
 
 test("Manage Authors list: first column is External ID, second column is Name, first row is BRONTC / Charlotte Brontë", async ({ page }) => {
   await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` });
