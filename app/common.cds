@@ -99,14 +99,6 @@ annotate my.Authors with @(
       externalId,
       name
     ],
-    LineItem       : [
-      {Value: externalId},
-      {Value: name},
-      {Value: dateOfBirth},
-      {Value: dateOfDeath},
-      {Value: placeOfBirth},
-      {Value: placeOfDeath},
-    ],
   }
 ) {
   ID         @UI.Hidden  @Common: {
