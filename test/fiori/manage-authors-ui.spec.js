@@ -24,7 +24,7 @@ test("Manage Authors Adapt Filters: External ID and Name are selected; Add Filte
   const addFilterOptions = await getAvailableAddFilterOptions(page, dialog, expect);
 
   // Assert the available "Add Filter" options (order-insensitive)
-  expect(addFilterOptions.sort()).toEqual(["Age", "Date of Birth", "Date of Death", "External ID", "ID", "Lifetime", "Place of Birth", "Place of Death"]);
+  expect(addFilterOptions.sort()).toEqual(["Age", "Date of Birth", "Date of Death", "ID", "Lifetime", "Place of Birth", "Place of Death"]);
 });
 
 test("Manage Authors list: first column is External ID, second column is Name, first row is BRONTC / Charlotte Brontë", async ({ page }) => {

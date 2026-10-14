@@ -2,6 +2,11 @@ using {AdminService} from '@capire/bookshop';
 
 annotate AdminService.Authors with @odata.draft.enabled;
 
+annotate AdminService.Authors with @UI.SelectionFields: [
+  externalIdDisplay,
+  name
+];
+
 ////////////////////////////////////////////////////////////////////////////
 //
 //	Authors Object Page
