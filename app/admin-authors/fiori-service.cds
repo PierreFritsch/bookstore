@@ -20,10 +20,12 @@ annotate AdminService.Authors with @(UI: {
     Visualizations: ['@UI.LineItem'],
   },
   LineItem           : [
+    // Display the bare External ID in the Authors table
     {
       Value                : externalIdDisplay,
       ![@HTML5.CssDefaults]: {width: '8em'}
     },
+    // Hide the #TextFirst "Name (External ID)" column in the Authors table
     {
       Value        : externalId,
       ![@UI.Hidden]: true
