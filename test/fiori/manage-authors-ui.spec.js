@@ -24,7 +24,7 @@ test("Manage Authors Adapt Filters: External ID and Name are selected; Add Filte
   const addFilterOptions = await getAvailableAddFilterOptions(page, dialog, expect);
 
   // Assert the available "Add Filter" options (order-insensitive)
-  expect(addFilterOptions.sort()).toEqual(["Age", "Date of Birth", "Date of Death", "ID", "Lifetime", "Place of Birth", "Place of Death"]);
+  expect(addFilterOptions.sort()).toEqual(["Age", "Date of Birth", "Date of Death", "Lifetime", "Place of Birth", "Place of Death"]);
 });
 
 test("Manage Authors p13n dialog: Columns and Sort tabs list expected options", async ({ page }) => {
@@ -37,22 +37,7 @@ test("Manage Authors p13n dialog: Columns and Sort tabs list expected options", 
     // selected (visible by default), in display order
     ["External ID", "Name", "Date of Birth", "Date of Death", "Place of Birth", "Place of Death"],
     // all columns (selected + opt-in), order-insensitive
-    [
-      "External ID",
-      "Name",
-      "Date of Birth",
-      "Date of Death",
-      "Place of Birth",
-      "Place of Death",
-      "Age",
-      "Changed By",
-      "Changed On",
-      "Created By",
-      "Created On",
-      "External ID", // duplicate — bug under investigation on this branch
-      "ID",
-      "Lifetime",
-    ],
+    ["External ID", "Name", "Date of Birth", "Date of Death", "Place of Birth", "Place of Death", "Age", "Changed By", "Changed On", "Created By", "Created On", "Lifetime"],
   );
 
   await assertP13nSortOptions(page, p13nDialog, [
