@@ -47,14 +47,17 @@ test('Author column settings quick actions: Sort By shows "External ID" and "Nam
   // Click the "Author" column header label to open the Column Settings quick actions popover
   await page.getByRole("columnheader", { name: "Author" }).getByText("Author").click();
 
-  const columnSettings = page.getByRole("dialog", { name: "Column Settings" });
+  // In UI5 ≥ 1.153 the popover carries aria-label="Column Settings"; in 1.142 it does not —
+  // locate by heading text inside the dialog instead, which works across both versions.
+  const columnSettings = page.getByRole("dialog").filter({ has: page.getByRole("heading", { name: "Column Settings" }) });
   await expect(columnSettings).toBeVisible({ timeout: 5000 });
 
   // The "Sort By" list should contain exactly "External ID" and "Name"
   const sortByList = columnSettings.getByRole("list", { name: "Sort By" });
+  // Wait for all items to render before checking individual texts
+  await expect(sortByList.getByRole("listitem")).toHaveCount(2);
   await expect(sortByList.getByText("External ID", { exact: true })).toBeVisible();
   await expect(sortByList.getByText("Name", { exact: true })).toBeVisible();
-  await expect(sortByList.getByRole("listitem")).toHaveCount(2);
 
   await columnSettings.getByRole("button", { name: "Close" }).click();
   await expect(columnSettings).toBeHidden({ timeout: 5000 });
