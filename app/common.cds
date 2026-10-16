@@ -35,12 +35,11 @@ annotate my.Books with @(
     ]
   }
 ) {
-  ID     @Common          : {
+  ID @Common: {
     SemanticObject : 'Books',
     Text           : title,
     TextArrangement: #TextOnly
   };
-  author @ValueList.entity: 'Authors';
 };
 
 annotate common.Currencies with {
@@ -70,10 +69,7 @@ annotate my.Books with {
     Text           : genre.name,
     TextArrangement: #TextOnly
   };
-  author  @title: '{i18n>Author}'       @Common              : {
-    Text           : author.name,
-    TextArrangement: #TextFirst
-  };
+  author  @title: '{i18n>Author}'       @Common              : {ExternalID: author.externalId, };
   price   @title: '{i18n>Price}'        @Measures.ISOCurrency: currency_code;
   stock   @title: '{i18n>Stock}';
   descr   @title: '{i18n>Description}'  @UI.MultiLineText;
@@ -85,26 +81,27 @@ annotate my.Books with {
 //
 annotate my.Authors with @(
   Common.SemanticKey: [ID],
+  Capabilities      : {
+    SortRestrictions  : {
+      $Type                : 'Capabilities.SortRestrictionsType',
+      NonSortableProperties: ['externalId']
+    },
+    FilterRestrictions: {
+      $Type                  : 'Capabilities.FilterRestrictionsType',
+      NonFilterableProperties: ['externalId']
+    }
+  },
   UI                : {
     Identification : [{Value: name}],
-    SelectionFields: [
-      ID,
-      name
-    ],
-    LineItem       : [
-      {Value: ID},
-      {Value: name},
-      {Value: dateOfBirth},
-      {Value: dateOfDeath},
-      {Value: placeOfBirth},
-      {Value: placeOfDeath},
-    ],
   }
 ) {
-  ID @Common: {
-    SemanticObject : 'Authors',
+  ID         @UI.Hidden  @Common: {
+    SemanticObject: 'Authors',
+    ExternalID    : externalId,
+  };
+  externalId @Common: {
     Text           : name,
-    TextArrangement: #TextSeparate,
+    TextArrangement: #TextFirst
   };
 };
 
@@ -132,6 +129,7 @@ annotate my.Authors with @(UI: {
 //
 annotate my.Authors with {
   ID           @title: '{i18n>ID}';
+  externalId   @title: '{i18n>ExternalID}';
   name         @title: '{i18n>Name}';
   dateOfBirth  @title: '{i18n>DateOfBirth}';
   dateOfDeath  @title: '{i18n>DateOfDeath}';
