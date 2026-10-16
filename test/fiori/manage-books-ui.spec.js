@@ -3,25 +3,21 @@ const { test, expect } = require("@playwright/test");
 const BASE = process.env.CDS_URL ?? "http://localhost:4004";
 const AUTH = Buffer.from("alice:").toString("base64");
 
-test('Manage Books list shows author in TextFirst format "Emily Brontë (BRONTE)"', async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` });
   await page.goto(`${BASE}/$fiori-preview/AdminService/Books#preview-app`);
 
-  // Wait for the table to load data (the responsive table uses role="row" for rows)
+  // Wait for the table to load data
   await expect(page.getByRole("row").nth(1)).toBeVisible({ timeout: 30000 });
+});
 
+test('Manage Books list shows author in TextFirst format "Emily Brontë (BRONTE)"', async ({ page }) => {
   // The author column uses @Common.Text: author.name and @Common.TextArrangement: #TextFirst
   // which renders as "Name (ID)" — e.g. "Emily Brontë (BRONTE)"
   await expect(page.getByText("Emily Brontë (BRONTE)", { exact: true })).toBeVisible();
 });
 
 test('Group by Author: group separator row shows author #TextFirst "Emily Brontë (BRONTE)"', async ({ page }) => {
-  await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` });
-  await page.goto(`${BASE}/$fiori-preview/AdminService/Books#preview-app`);
-
-  // Wait for the table to load data
-  await expect(page.getByRole("row").nth(1)).toBeVisible({ timeout: 30000 });
-
   // Open the p13n Settings dialog from the toolbar
   await page.getByRole("button", { name: "Settings" }).click();
   const p13nDialog = page.getByRole("dialog");
@@ -48,12 +44,6 @@ test('Group by Author: group separator row shows author #TextFirst "Emily Bront�
 });
 
 test('Author column settings quick actions: Sort By shows "External ID" and "Name"', async ({ page }) => {
-  await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` });
-  await page.goto(`${BASE}/$fiori-preview/AdminService/Books#preview-app`);
-
-  // Wait for the table to load data
-  await expect(page.getByRole("row").nth(1)).toBeVisible({ timeout: 30000 });
-
   // Click the "Author" column header label to open the Column Settings quick actions popover
   await page.getByRole("columnheader", { name: "Author" }).getByText("Author").click();
 
@@ -74,9 +64,6 @@ test('Author column settings quick actions: Sort By shows "External ID" and "Nam
 });
 
 test("Author value help: Show Filters has ExternalID+Name, table has ExternalID+Name columns, ExternalID bare, Name bare, token #TextFirst, Cancel", async ({ page }) => {
-  await page.setExtraHTTPHeaders({ Authorization: `Basic ${AUTH}` });
-  await page.goto(`${BASE}/$fiori-preview/AdminService/Books#preview-app`);
-
   // Wait for the filter bar to render (author_ID is in @UI.SelectionFields → textbox)
   const authorInput = page.getByRole("textbox", { name: /Author/i });
   await expect(authorInput).toBeVisible({ timeout: 30000 });
