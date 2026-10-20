@@ -11,13 +11,13 @@ test.beforeEach(async ({ page }) => {
   await expect(page.getByRole("row").nth(1)).toBeVisible({ timeout: 30000 });
 });
 
-test('Manage Books list shows author in TextFirst format "Emily Brontë (BRONTE)"', async ({ page }) => {
+test('Manage Books list shows author in TextFirst format "Emily Brontë (BRONE)"', async ({ page }) => {
   // The author column uses @Common.Text: author.name and @Common.TextArrangement: #TextFirst
-  // which renders as "Name (ID)" — e.g. "Emily Brontë (BRONTE)"
-  await expect(page.getByText("Emily Brontë (BRONTE)", { exact: true })).toBeVisible();
+  // which renders as "Name (ID)" — e.g. "Emily Brontë (BRONE)"
+  await expect(page.getByText("Emily Brontë (BRONE)", { exact: true })).toBeVisible();
 });
 
-test('Group by Author: group separator row shows author #TextFirst "Emily Brontë (BRONTE)"', async ({ page }) => {
+test('Group by Author: group separator row shows author #TextFirst "Emily Brontë (BRONE)"', async ({ page }) => {
   // Open the p13n Settings dialog from the toolbar
   await page.getByRole("button", { name: "Settings" }).click();
   const p13nDialog = page.getByRole("dialog");
@@ -38,9 +38,9 @@ test('Group by Author: group separator row shows author #TextFirst "Emily Bront�
   await p13nDialog.getByRole("button", { name: "OK" }).click();
   await expect(p13nDialog).toBeHidden({ timeout: 10000 });
 
-  // The group separator row label includes the field name prefix: "External ID: Emily Brontë (BRONTE)"
+  // The group separator row label includes the field name prefix: "External ID: Emily Brontë (BRONE)"
   // author_ID uses @Common.Text: author.name and @Common.TextArrangement: #TextFirst
-  await expect(page.getByRole("row", { name: /External ID: Emily Brontë \(BRONTE\)/ }).first()).toBeVisible({ timeout: 15000 });
+  await expect(page.getByRole("row", { name: /External ID: Emily Brontë \(BRONE\)/ }).first()).toBeVisible({ timeout: 15000 });
 });
 
 test('Author column settings quick actions: Sort By shows "External ID" and "Name"', async ({ page }) => {
@@ -87,10 +87,10 @@ test("Author value help: Show Filters has ExternalID+Name, table has ExternalID+
   await expect(columnHeaders.filter({ hasText: "Name" })).toBeVisible({ timeout: 10000 });
   await expect(columnHeaders).toHaveCount(2);
 
-  // ── Cell content: bare ID "BRONTE", bare Name "Emily Bronte" ─────────────────
-  // #TextSeparate means the ID cell shows only "BRONTE" (not "Emily Brontë (BRONTE)")
+  // ── Cell content: bare ID "BRONE", bare Name "Emily Bronte" ─────────────────
+  // #TextSeparate means the ID cell shows only "BRONE" (not "Emily Brontë (BRONE)")
   // and the Name cell shows only "Emily Bronte" (not a combined value)
-  await expect(vhDialog.getByRole("gridcell", { name: "BRONTE", exact: true })).toBeVisible({ timeout: 10000 });
+  await expect(vhDialog.getByRole("gridcell", { name: "BRONE", exact: true })).toBeVisible({ timeout: 10000 });
   await expect(vhDialog.getByRole("gridcell", { name: "Emily Brontë", exact: true })).toBeVisible({ timeout: 10000 });
 
   // ── Show Filters panel: exactly 2 filter inputs (ID and Name) ─────────────
@@ -119,8 +119,8 @@ test("Author value help: Show Filters has ExternalID+Name, table has ExternalID+
   await page.bringToFront();
   await page.keyboard.press("Shift+ ");
 
-  // Token in "Selected Items and Conditions" shows #TextFirst: "Emily Brontë (BRONTE)"
-  await expect(vhDialog.getByRole("option", { name: /Emily Brontë \(BRONTE\)/ })).toBeVisible({ timeout: 5000 });
+  // Token in "Selected Items and Conditions" shows #TextFirst: "Emily Brontë (BRONE)"
+  await expect(vhDialog.getByRole("option", { name: /Emily Brontë \(BRONE\)/ })).toBeVisible({ timeout: 5000 });
 
   // ── Cancel ────────────────────────────────────────────────────────────────
   await vhDialog.getByRole("button", { name: "Cancel" }).click();
