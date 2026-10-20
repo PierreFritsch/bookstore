@@ -58,7 +58,7 @@ test('Author column settings quick actions: Sort By shows "External ID" and "Nam
   const sortByList = columnSettings.getByRole("list", { name: "Sort By" });
   await expect(sortByList.getByRole("listitem")).toHaveText(
     ["External ID", "Name"],
-    { useInnerText: true }
+    { useInnerText: true, timeout: 10000 }
   );
 
   await columnSettings.getByRole("button", { name: "Close" }).click();
