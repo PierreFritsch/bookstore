@@ -1,7 +1,6 @@
 using {AdminService} from '@capire/bookshop';
 using from '../common'; // to help UI linter get the complete annotations
 
-
 ////////////////////////////////////////////////////////////////////////////
 //
 //	Books Object Page
@@ -76,6 +75,15 @@ annotate AdminService.Books with {
 annotate AdminService.Genres with {
     ID @UI.Hidden;
 };
+
+
+////////////////////////////////////////////////////////////////////////////
+//
+//	Value Help for Authors
+//
+annotate AdminService.Books with {
+  author @ValueList.entity: 'AuthorsVH';
+}
 
 ////////////////////////////////////////////////////////////
 //

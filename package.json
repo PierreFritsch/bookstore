@@ -15,14 +15,16 @@
   "devDependencies": {
     "@cap-js/cds-test": "^1",
     "@cap-js/sqlite": ">=1",
-    "@playwright/test": "^1.64.0"
+    "@playwright/test": "^1.64.0",
+    "patch-package": "^8.0.1"
   },
   "scripts": {
     "start": "cds-serve",
     "watch": "cds watch",
     "chest": "chest --exclude test/fiori",
     "jest": "jest",
-    "test": "chest --exclude test/fiori"
+    "test": "chest --exclude test/fiori",
+    "postinstall": "patch-package"
   },
   "cds": {
     "fiori": {
