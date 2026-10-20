@@ -129,7 +129,5 @@ annotate AdminService.AuthorsVH with {
 
   // @UI.Hidden suppresses the TextFirst "Name (ExternalID)" column that FEv4 would otherwise
   // render automatically because of @Common.Text: name on externalId.
-  externalId @UI.Hidden
-             @Common.Text           : name
-             @Common.TextArrangement: #TextFirst;
+  externalId @UI.Hidden;
 };
