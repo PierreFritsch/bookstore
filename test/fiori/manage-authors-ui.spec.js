@@ -59,16 +59,16 @@ test("Manage Authors p13n dialog: Columns and Sort tabs list expected options", 
   await expect(p13nDialog).toBeHidden({ timeout: 5000 });
 });
 
-test("Manage Authors list: first column is External ID, second column is Name, first row is BRONTC / Charlotte Brontë", async ({ page }) => {
+test("Manage Authors list: first column is External ID, second column is Name, first row is BRONC / Charlotte Brontë", async ({ page }) => {
   // Column order: nth(0) is "Select All", content columns start at nth(1)
   const headers = page.getByRole("columnheader");
   await expect(headers.nth(1)).toHaveText("External ID", { exact: true });
   await expect(headers.nth(2)).toHaveText("Name", { exact: true });
 
-  // First data row (sorted ascending by External ID): BRONTC
-  // exact:true ensures bare ID — fails if ExternalID switches to TextFirst ("Charlotte Brontë (BRONTC)")
+  // First data row (sorted ascending by External ID): BRONC
+  // exact:true ensures bare ID — fails if ExternalID switches to TextFirst ("Charlotte Brontë (BRONC)")
   const firstDataRow = page.getByRole("row").nth(1);
   const cells = firstDataRow.getByRole("gridcell");
-  await expect(cells.nth(1)).toHaveText("BRONTC", { exact: true });
+  await expect(cells.nth(1)).toHaveText("BRONC", { exact: true });
   await expect(cells.nth(2)).toHaveText("Charlotte Brontë", { exact: true });
 });
