@@ -24,23 +24,17 @@ async function openAdaptFiltersDialog(page, expect) {
  * @returns {Promise<string[]>} trimmed, non-empty option texts
  */
 async function getAvailableAddFilterOptions(page, dialog, expect) {
+  // Detect which UI variant is rendered:
+  // - "ComboBox": newer UI5 with an "Add Filter" ComboBox (placeholder "Select or Type Name")
+  // - "Grid": older UI5 (e.g. 1.142) where all fields are shown as grid rows; unselected = available
   const kind = await dialog.evaluate((dlg) => {
-    if (dlg.querySelector(".sapMComboBox")) return "ComboBox";
-    if (dlg.querySelector(".sapMSlt, .sapMSelect")) return "Select";
-    return "unknown";
+    if (dlg.querySelector('input.sapMComboBoxInner[placeholder="Select or Type Name"]')) return "ComboBox";
+    return "Grid";
   });
 
   let options;
 
-  if (kind === "Select") {
-    const select = dialog.locator(".sapMSlt, .sapMSelect").first();
-    await select.click();
-    await page.waitForTimeout(200);
-    await page.keyboard.press("F4");
-    await expect(page.locator('[role="listbox"]')).toBeVisible({ timeout: 5000 });
-    options = await page.locator('[role="listbox"] [role="option"]').allTextContents();
-    await page.keyboard.press("Escape");
-  } else {
+  if (kind === "ComboBox") {
     // ComboBox variant — open the popup via JS and poll until the options stabilise
     const readOptions = (ph) =>
       page.evaluate((placeholder) => {
@@ -84,6 +78,19 @@ async function getAvailableAddFilterOptions(page, dialog, expect) {
         box.querySelector('[role="button"]')?.click();
       }
     }, PH);
+  } else {
+    // Grid variant (e.g. UI5 1.142): all fields are shown as rows; unchecked rows are available to add.
+    await dialog.getByRole("grid").waitFor({ timeout: 5000 });
+    options = await dialog.evaluate((dlg) => {
+      const rows = [...dlg.querySelectorAll('[role="grid"] [role="row"]')].slice(1); // skip header
+      return rows
+        .filter((row) => !row.querySelector('input[type="checkbox"]')?.checked)
+        .map((row) => {
+          const cells = [...row.querySelectorAll('[role="gridcell"]')];
+          return cells[1]?.textContent?.trim() ?? "";
+        })
+        .filter(Boolean);
+    });
   }
 
   return options.map((o) => o.trim()).filter(Boolean);
